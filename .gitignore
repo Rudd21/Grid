@@ -1,0 +1,33 @@
+# --- General ---
+**/node_modules/
+**/dist/
+**/.nuxt/
+**/.output/
+**/.env
+.env
+grid-backend/.env
+grid-frontend/.env
+**/.env.*
+
+.DS_Store
+!.env.example
+
+# --- NestJS (Backend) ---
+/grid-backend/dist/
+/grid-backend/node_modules/
+/grid-backend/thumbnails/
+/grid-backend/*.log
+/grid-backend/.prisma/
+
+# --- Nuxt 3 (Frontend) ---
+/grid-frontend/.nuxt/
+/grid-frontend/.output/
+/grid-frontend/node_modules/
+/grid-frontend/.nitro/
+/grid-frontend/.cache/
+
+# --- IDE & Editors ---
+.vscode/
+.idea/
+*.swp
+*.sublime-project

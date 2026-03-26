@@ -1,0 +1,3 @@
+<template>
+    привіт софійко
+</template>

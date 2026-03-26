@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  name String
+  password String
+
+  membership Member[]
+  tasks Task[]
+}
+
+model Project {
+  id String @id @default(uuid())
+  title String
+  description String
+  status ProjectStatus
+  members Member[]
+  sprints Sprint[]
+  tasks Task[]
+}
+
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  CLOSED
+}
+
+model Member {
+  id String @id @default(uuid())
+  role UserRole
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+enum UserRole {
+  OWNER
+  MANAGER
+  MEMBER
+}
+
+model Sprint {
+  id String @id @default(uuid())
+  title String
+  start_date DateTime
+  end_date DateTime
+
+  project Project @relation(fields: [id_project], references: [id])
+  id_project String
+  tasks Task[]
+}
+
+model Task {
+  id String @id @default(uuid())
+  title String
+  description String?
+  priority TaskStatus @default(MEDIUM)
+  taken_at DateTime?
+
+  user User? @relation(fields: [id_user], references: [id])
+  id_user String?
+
+  sprint Sprint @relation(fields: [id_sprint], references: [id])
+  id_sprint String
+
+  project Project @relation(fields: [id_project], references: [id])
+  id_project String
+}
+
+enum TaskStatus {
+  EASY
+  MEDIUM
+  HARD
+}
