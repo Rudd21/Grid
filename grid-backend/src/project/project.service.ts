@@ -38,7 +38,8 @@ export class ProjectService {
                     select:{
                         id: true,
                         title: true,
-                        priority: true,
+                        description: true,
+                        difficulty: true,
                         taken_at: true
                     }
                 }

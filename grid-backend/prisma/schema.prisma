@@ -71,7 +71,7 @@ model Task {
   id String @id @default(uuid())
   title String
   description String?
-  priority TaskStatus @default(MEDIUM)
+  difficulty TaskStatus @default(MEDIUM)
   taken_at DateTime?
 
   user User? @relation(fields: [id_user], references: [id])

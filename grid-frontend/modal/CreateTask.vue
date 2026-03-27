@@ -9,13 +9,13 @@ const isSuccess = ref(false);
 interface TaskForm {
     title: string,
     description: string,
-    priority: string,
+    difficulty: string,
 }
 
 const form = reactive<TaskForm>({
     title: '',
     description: '',
-    priority: '',
+    difficulty: '',
 })
 
 async function createTask(args: TaskForm) {
@@ -53,8 +53,13 @@ async function createTask(args: TaskForm) {
                     <input v-model="form.description" class="border p-1" type="text" required>
                 </label>
                 <label class="p-1">
-                    Priority:
-                    <input v-model="form.priority" class="border p-1" type="text" required>
+                    Difficulty:
+                    <select v-model="form.difficulty" class="border p-1" required>
+                        <option disabled value="">Оберіть складність</option>
+                        <option value="EASY">EASY</option>
+                        <option value="MEDIUM">MEDIUM</option>
+                        <option value="HARD">HARD</option>
+                    </select>
                 </label>
             </div>
             <button class="p-2 m-2 bg-green-400 text-white" type="submit">Create</button>

@@ -11,5 +11,5 @@ export class CreateTaskDto {
     description: string;
 
     @IsEnum(TaskStatus, {message: "Вказано варіант якого не існує"})
-    priority: TaskStatus
+    difficulty: TaskStatus
 }

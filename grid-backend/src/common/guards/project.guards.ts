@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { UserRole } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 
@@ -11,9 +11,12 @@ export class ProjectAccessGuard implements CanActivate {
 
         const request = context.switchToHttp().getRequest();
         const userId = request.user?.sub;
-        const projectId = request.params.projectId;
+        const projectId = request.params.projectId || request.query.projectId;
 
-        if(!userId || !projectId) return false;
+        if(!userId || !projectId){
+            throw new BadRequestException("Project ID is missaing")    
+        }
+
         const member = await this.prisma.member.findUnique({
             where: {
                 userId_projectId: {userId, projectId},
