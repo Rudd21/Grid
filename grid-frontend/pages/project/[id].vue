@@ -32,6 +32,10 @@ const bookmarkList: Record<string, Bookmark> = {
         title: 'Members',
         to: '/members',
         reqTo: '/reqMembers'
+    }, settings:{
+        title: 'Settings',
+        to: '/settings',
+        reqTo: '/settings'
     }
 }
 
@@ -53,19 +57,19 @@ const isLoading = ref(false);
 //     }
 // }
 
-async function deleteProject() {
-    try{
-        await $fetch(`http://localhost:8000/project/${projectId}`, {
-            method: 'DELETE',
-            credentials: 'include'
-        })
+// async function deleteProject() {
+//     try{
+//         await $fetch(`http://localhost:8000/project/${projectId}`, {
+//             method: 'DELETE',
+//             credentials: 'include'
+//         })
 
-        console.log("Успішно видалено проєкт")
-        navigateTo('/project')
-    }catch(error){
-        console.error('Помилка запиту: ', error)
-    }
-}
+//         console.log("Успішно видалено проєкт")
+//         navigateTo('/project')
+//     }catch(error){
+//         console.error('Помилка запиту: ', error)
+//     }
+// }
 
 
 </script>
@@ -100,9 +104,6 @@ async function deleteProject() {
                     >
                         {{ item.title }}
                     </NuxtLink>
-
-                    <button class="cursor-pointer text-red-600 text-center bg-white p-2 rounded-[10px] transition-color disabled:text-gray-400 disabled:bg-gray-200 transistion" 
-                            @click="deleteProject">Delete project</button>
                 </div>
             </div>
 

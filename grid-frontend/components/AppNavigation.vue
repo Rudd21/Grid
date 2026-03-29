@@ -34,12 +34,10 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
                 <img class="w-10 h-10" src="/logo.png" alt="">
                 <h1 class="font-bold text-blue-600">Grid</h1>
                 <div>
-                    <button 
-                        v-for="(content, key) in navigationMap"
-                        :key="key"
-                        @mouseenter="activeNav = key"
+                    <a
+                        href="/project"
                         :class="['group p-3 rounded-[5px] transition', activeNav === 'project' ? 'text-[#FF7F11]' : 'hover:text-[#FF7F11]']" 
-                    >{{ key }} ⇓</button>
+                    >My projects</a>
                 </div>
             </li>
             <li>
@@ -65,24 +63,5 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
 
             </li>
         </ul>
-        <Transition
-            mode="out-in"
-            enter-active-class="transition duration-500 ease-out"
-            enter-from-class="transform -translate-y-4 opacity-0"
-            enter-to-class="transform translate-y-0 opacity-100"
-            leave-active-class="transition duration-300 ease-in"
-            leave-from-class="transform translate-y-0 opacity-100"
-            leave-to-class="transform translate-y-2 opacity-0"
-            :class="[activeNav === 'none' ? 'hidden' : 'visible']"
-        >
-            <div class="absolute translate-y-[0px] group-hover:opacity-100 transition-opacity">
-                <ul :key="currentNav?.nav1" class="flex mx-[100px]">
-                    <li><a class="p-3 border rounded-[15px]" href="/project">{{currentNav?.nav1}}</a></li>
-                    <li><a class="p-3 border rounded-[15px]" href="">{{ currentNav?.nav2 }}</a></li>
-                    <li><a class="p-3 border rounded-[15px]" href="">{{currentNav?.nav3}}</a></li>
-                    <li><a class="p-3 border rounded-[15px]" href="">{{ currentNav?.nav4 }}</a></li>
-                </ul>
-            </div>
-        </Transition>
     </nav>
 </template>

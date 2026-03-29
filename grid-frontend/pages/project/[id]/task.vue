@@ -39,6 +39,19 @@ onMounted(()=>{
     requestSprint()
 })
 
+
+async function takeTask(sprintId: string, taskId: string) {
+    try{
+        await $fetch<any>(`http://localhost:8000/sprint/${sprintId}/task/${taskId}`,{
+            method: 'PATCH',
+            credentials: 'include'
+        })
+    }catch(error){
+        console.error("Виникла помилка при взятті задачі: ", error);
+    }
+}
+
+
 const modal = useModal()
 
 const openCreateSprint = () => {
@@ -58,6 +71,7 @@ const openCreateTask = (sprintId: string) => {
         }
     })
 }
+
 
 
 </script>
@@ -95,7 +109,19 @@ const openCreateTask = (sprintId: string) => {
                                 
                                 Difficulty: {{ task.difficulty }}
                             </span>
-                            <button class="p-2 bg-blue-600 text-white rounded-[5px]" v-if="!task.taken_at">Взяти задачу</button>
+                            <div>
+                                <button 
+                                    v-if="!task.taken_at" 
+                                    @click="takeTask(sprint.id, task.id)"
+                                    class="p-2 bg-blue-600 text-white rounded-[5px]"
+                                    >Взяти задачу
+                                </button>
+                                <button 
+                                    v-else
+                                    class="p-2 bg-gray-600 text-white rounded-[5px]"
+                                    >Задача взята
+                                </button>
+                            </div>
                         </div>
                     </div>
 

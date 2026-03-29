@@ -47,6 +47,38 @@ export class ProjectService {
         })
     }
 
+    async membersProject(projectId: string){
+        return this.prisma.member.findMany({
+            where: {
+                projectId: projectId,
+            },
+            include: {
+                user:{
+                    select:{
+                        id: true,
+                        name: true,
+                        email: true
+                    }
+                }
+            }
+        })
+    }
+
+    async statsProject(projectId: string){
+        return this.prisma.project.findUnique({
+            where: {id: projectId},
+            include: {
+                _count:{
+                    select:{
+                        members: true,
+                        sprints: true,
+                        tasks: true
+                    }
+                }
+            }
+        })
+    }
+
     async createProject(userId: string, dto: CreateProjectDto){
         return this.prisma.project.create({
             data: {
