@@ -1,0 +1,23 @@
+export enum TaskStatus {
+  EASY = "EASY",
+  MEDIUM = "MEDIUM",
+  HARD = "HARD"
+}
+
+export interface Task {
+    id: string;
+    title: string;
+    description: string;
+    difficulty: TaskStatus;
+    id_sprint: string;
+    id_project: string;
+    
+    taken_at?: string;
+    id_user?: string
+}
+
+export interface CreateTaskDto {
+    title: string;
+    description: string;
+    difficulty: TaskStatus;
+}

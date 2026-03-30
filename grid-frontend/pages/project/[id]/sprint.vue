@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useModal } from '~/hooks/useModal';
 import CreateSprint from '~/modal/CreateSprint.vue';
+import type { Sprint } from '~/types/sprint';
 
 
 const route = useRoute();
@@ -8,11 +9,7 @@ const projectId = route.params.id;
 const sprintList = ref();
 const activeSprint = ref(false)
 
-interface SprintType{
-    id: string,
-    title: string,
-    start_date: string,
-    end_date: string,
+interface SprintType extends Sprint{
     isActive: boolean
 }
 

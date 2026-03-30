@@ -1,22 +1,13 @@
 <script setup lang="ts">
+import type { Project } from '~/types/project';
 
 // Request projects
 const projectList = ref();
 const currentProject = ref();
 
-interface ProjectShort{
-    id: number | string,
-    title: string,
-}
-
-interface FoundProjects{
-    message: string,
-    data: ProjectShort[],
-}
-
 async function reqProjects() {
     try{
-        const projects = await $fetch<FoundProjects>('http://localhost:8000/project/my',{
+        const projects = await $fetch<Project[]>('http://localhost:8000/project/my',{
             'method': 'GET',
             'credentials': 'include'
         })

@@ -1,34 +1,23 @@
 <script setup lang="ts">
+import { ProjectStatus, type CreateProjectDto } from '~/types/project';
 
-interface ProjectForm {
-    title: string,
-    description: string,
-    status: string
-}
 
-const form = reactive<ProjectForm>({
+const form = reactive<CreateProjectDto>({
     title: '',
     description: '',
-    status: ''
+    status: ProjectStatus.PLANNED
 })
 
-interface ProjectResponse{
-    message: string,
-    projetc:{
-        title:string,
-        status:string
+async function createProject(args: CreateProjectDto) {
+    try{
+        await $fetch<CreateProjectDto>('http://localhost:8000/project', {
+            method: 'POST',
+            body: form,
+            credentials: 'include'
+        });
+    }catch(error){
+        console.error("Виникла помилка при ")
     }
-}
-
-async function createProject(args: ProjectForm) {
-    const response = await $fetch('http://localhost:8000/project', {
-        method: 'POST',
-        body: form,
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json',
-        } as Record<string, string>
-    });
 }
 
 </script>
@@ -47,7 +36,11 @@ async function createProject(args: ProjectForm) {
             </label>
             <label for="">
                 <p>Project status:</p>
-                <input v-model="form.status" type="text">
+                <select v-model="form.status"  name="status" id="">
+                    <option value="PLANNED">PLANNED</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="CLOSED">CLOSED</option>
+                </select>
             </label>
             <button class="bg-green-400 p-2 w-[30%]" type="submit">Create</button>
         </form>

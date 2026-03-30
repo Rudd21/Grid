@@ -28,6 +28,12 @@ export class ProjectService {
         }));
     }
 
+    async pickProject(projectId: string){
+        return this.prisma.project.findUnique({
+            where: { id:projectId }
+        })
+    }
+
     async tasksProject(projectId: string) {
         return this.prisma.sprint.findMany({
             where: {
@@ -94,6 +100,17 @@ export class ProjectService {
                 members: true
             }
         });
+    }
+
+    async updateProject(projectId: string, dto: CreateProjectDto){
+        return this.prisma.project.update({
+            where: {id: projectId},
+            data:{
+                title: dto.title,
+                description: dto.description,
+                status: dto.status
+            }
+        })
     }
 
     async deleteProject(userId: string, projectId: string){

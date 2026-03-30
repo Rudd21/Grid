@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Member } from '~/types/member';
+
 
 const members = ref()
 
@@ -7,7 +9,7 @@ const projectId = route.params.id;
 
 async function reqMembers(){
     try{
-        const responce = await $fetch(`http://localhost:8000/project/${projectId}/members`,{
+        const responce = await $fetch<Member[]>(`http://localhost:8000/project/${projectId}/members`,{
             method: 'GET',
             credentials: 'include'
         })

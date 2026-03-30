@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Body, UseGuards, Get, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Req, Body, UseGuards, Get, Delete, Param, Put } from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/auth.guards';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectService } from './project.service';
@@ -14,6 +14,12 @@ export class ProjectController {
     @Get('my')
     async findAllMyProjects(@CurrentUser('sub') userId: string) {
         return this.projectsService.findAllMyProjects(userId);
+    }
+
+    // Вибрати один проєкт
+    @Get(':projectId')
+    async pickProject(@Param('projectId') projectId: string){
+        return this.projectsService.pickProject(projectId);
     }
 
     // Всі задачі проєкту
@@ -38,6 +44,13 @@ export class ProjectController {
     @Post()
     async create(@CurrentUser() user: any, @Body() dto: CreateProjectDto){
         return this.projectsService.createProject(user.sub, dto)
+    }
+
+    // Оновити налаштування проєкту
+    @UseGuards(ProjectAccessGuard)
+    @Put(':projectId/update')
+    async updateProject(@Param('projectId') projectId: string, @Body() dto: CreateProjectDto) {
+        return this.projectsService.updateProject(projectId, dto);
     }
 
     // Видалити проєкт

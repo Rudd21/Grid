@@ -2,27 +2,18 @@
 import { useModal } from '~/hooks/useModal';
 import CreateSprint from '~/modal/CreateSprint.vue';
 import CreateTask from '~/modal/CreateTask.vue';
-
+import type { Sprint } from '~/types/sprint';
+import type { Task } from '~/types/task';
 
 const route = useRoute();
 const projectId = route.params.id;
 const sprints = ref()
-const tasks = ref()
 const isLoading = ref(false);
-
-type Task = {
-    title: string;
-    description: string,
-    difficulty: string,
-    sprintId: string;
-    userId?: string,
-    takedAt?: Date,
-};
 
 async function requestSprint() {
     try{
         isLoading.value = true
-        const response = await $fetch<any>(`http://localhost:8000/project/${projectId}/task`,{
+        const response = await $fetch<Sprint[]>(`http://localhost:8000/project/${projectId}/task`,{
             'method': 'GET',
             'credentials': 'include'
         })
@@ -42,7 +33,7 @@ onMounted(()=>{
 
 async function takeTask(sprintId: string, taskId: string) {
     try{
-        await $fetch<any>(`http://localhost:8000/sprint/${sprintId}/task/${taskId}`,{
+        await $fetch(`http://localhost:8000/sprint/${sprintId}/task/${taskId}`,{
             method: 'PATCH',
             credentials: 'include'
         })

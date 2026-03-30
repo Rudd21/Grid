@@ -1,24 +1,18 @@
 <script setup lang="ts">
+import type { CreateSprintDto } from '~/types/sprint';
+
 
 const props = defineProps<{projectId: string}>();
 
 const isSuccess = ref(false);
 
-interface SprintForm {
-    title: string,
-    project: string,
-    start_date: string,
-    end_date: string,
-}
-
-const form = reactive<SprintForm>({
+const form = reactive<CreateSprintDto>({
     title: '',
-    project: '',
     start_date: '',
     end_date: ''
 })
 
-async function createSprint(args: SprintForm){
+async function createSprint(args: CreateSprintDto){
     try{
         await $fetch(`http://localhost:8000/project/${props.projectId}/sprint`,{
             method: 'POST',

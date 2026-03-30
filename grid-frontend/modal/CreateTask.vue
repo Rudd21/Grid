@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { TaskStatus, type CreateTaskDto } from '~/types/task';
+
 
 const props = defineProps<{sprintId:string}>();
 
@@ -6,19 +8,13 @@ const route = useRoute();
 const projectId = route.params.id as string;
 const isSuccess = ref(false);
 
-interface TaskForm {
-    title: string,
-    description: string,
-    difficulty: string,
-}
-
-const form = reactive<TaskForm>({
+const form = reactive<CreateTaskDto>({
     title: '',
     description: '',
-    difficulty: '',
+    difficulty: TaskStatus.MEDIUM
 })
 
-async function createTask(args: TaskForm) {
+async function createTask(args: CreateTaskDto) {
     try{
         await $fetch(`http://localhost:8000/sprint/${props.sprintId}/task?projectId=${projectId}`,{
             method: 'POST',
