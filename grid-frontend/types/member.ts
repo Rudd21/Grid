@@ -10,3 +10,7 @@ export interface Member {
     userId: string
     projectId: string
 }
+
+export interface CreateMemberDto{
+    email: string
+}

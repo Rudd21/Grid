@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
+import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class ProjectService {
@@ -46,7 +47,8 @@ export class ProjectService {
                         title: true,
                         description: true,
                         difficulty: true,
-                        taken_at: true
+                        taken_at: true,
+                        user: true
                     }
                 }
             }
@@ -66,6 +68,26 @@ export class ProjectService {
                         email: true
                     }
                 }
+            }
+        })
+    }
+
+    async addMember(projectId: string, email: string, role: UserRole = 'MEMBER'){
+        const user = await this.prisma.user.findUnique({
+            where: {
+                email
+            }
+        })
+
+        if(!user){
+            throw new NotFoundException('Користувача з таким email не знайдено')
+        }
+
+        return this.prisma.member.create({
+            data:{
+                projectId: projectId,
+                userId: user.id,
+                role: role
             }
         })
     }

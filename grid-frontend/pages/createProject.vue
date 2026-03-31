@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ProjectStatus, type CreateProjectDto } from '~/types/project';
 
-
 const form = reactive<CreateProjectDto>({
     title: '',
     description: '',

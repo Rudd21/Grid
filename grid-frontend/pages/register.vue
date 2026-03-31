@@ -15,12 +15,11 @@ const form = reactive<RegisterForm>({
 });
 
 async function submitForm(args: RegisterForm){
+    
     if(args.password != args.passwordConfirmation){
         console.log("Паролі не співпадають")
         return;
     }
-    
-    type RegisterRequest = Omit<RegisterForm, 'PasswordConfirmation'>
 
     const payload = {
         email: args.email,

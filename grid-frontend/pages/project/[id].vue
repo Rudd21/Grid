@@ -75,40 +75,39 @@ const isLoading = ref(false);
 </script>
 
 <template>
-    <div class="m-5 flex flex-col h-screen overflow-hidden border-2 border-blue-600 rounded-xl">
+    <div class="m-10 flex flex-col h-screen overflow-hidden border-2 border-blue-600/60 rounded-xl">
         <!-- Work place -->
-        <div class="flex min-h-[10%] bg-white items-center">
+        <div class="flex min-h-[10%] bg-white/60 items-center">
             <NuxtLink 
-                class="bg-white h-[60%] m-2 text-black px-4 py-2 underline rounded-lg transition-colors shadow-sm"
+                class=" h-[60%] m-2 text-black px-4 py-2 underline rounded-lg transition-colors shadow-sm"
                 to="/project"
             >
                 Back to projects
             </NuxtLink>
             |
-            <NuxtLink class="flex p-1 items-center m-2 text-[#D96868] hover:text-white hover:bg-[#D96868] rounded-[5px] transition" href="/createProject">+ Create Project</NuxtLink>
+            <NuxtLink class="flex p-1 items-center m-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-[5px] transition" href="/createProject">+ Create Project</NuxtLink>
         </div>
 
         <!-- Bookmarks -->
         <div class="flex flex-grow">
 
             <!-- Project bar -->
-            <div class="min-w-[20%] bg-blue-600">
-                <div class="flex flex-col gap-5 m-5">
+            <div class="min-w-[20%] bg-blue-600/60">
+                <div class="flex flex-col mt-5">
                     <NuxtLink
                         v-for="(item, key) in bookmarkList"    
                         :key="key"
                         :to="`/project/${projectId}${item.to}`"
                         :disabled="!currentProject"
-                        :class="[currentProject === '' ? '' : 'hover:text-[#D96868]']" 
-                        class="cursor-pointer text-center bg-white p-2 rounded-[10px] transition-color disabled:text-gray-400 disabled:bg-gray-200 transistion"
+                        class="flex items-center cursor-pointer text-left text-[20px] min-h-[50px] transition-color disabled:text-gray-400 disabled:bg-gray-200 hover:bg-blue-600 transition"
                     >
-                        {{ item.title }}
+                        <p class="ml-2 text-white">{{ item.title }}</p>
                     </NuxtLink>
                 </div>
             </div>
 
             <!-- Work place -->
-            <div class="flex-grow border-t-2 border-blue-600 bg-white">
+            <div class="flex-grow border-t-2 border-blue-600/60 bg-white">
                 <NuxtPage />
             </div>
         </div>

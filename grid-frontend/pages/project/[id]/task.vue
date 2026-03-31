@@ -3,7 +3,6 @@ import { useModal } from '~/hooks/useModal';
 import CreateSprint from '~/modal/CreateSprint.vue';
 import CreateTask from '~/modal/CreateTask.vue';
 import type { Sprint } from '~/types/sprint';
-import type { Task } from '~/types/task';
 
 const route = useRoute();
 const projectId = route.params.id;
@@ -110,7 +109,7 @@ const openCreateTask = (sprintId: string) => {
                                 <button 
                                     v-else
                                     class="p-2 bg-gray-600 text-white rounded-[5px]"
-                                    >Задача взята
+                                    >Задача взята користувачем: {{ task.user.name }}
                                 </button>
                             </div>
                         </div>

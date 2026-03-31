@@ -4,6 +4,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectService } from './project.service';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { ProjectAccessGuard } from 'src/common/guards/project.guards';
+import { UserRole } from '@prisma/client';
 
 @UseGuards(AuthGuard)
 @Controller('project')
@@ -32,6 +33,13 @@ export class ProjectController {
     @Get(':projectId/members')
     async membersProject(@CurrentUser() user: any, @Param('projectId') projectId: string){
         return this.projectsService.membersProject(projectId);
+    }
+
+    // Добавити учасника проєкту
+    @UseGuards(ProjectAccessGuard)
+    @Post(':projectId/members')
+    async addMember(@CurrentUser() user: any, @Param('projectId') projectId: string, @Body('email') email: string){
+        return this.projectsService.addMember(projectId, email)
     }
 
     // Запит статистики проєкту

@@ -51,7 +51,7 @@ const openModal = ()=>{
     <div
         v-for="sprint in sprintList"
         :key="sprint.id"
-        class="border border-2 m-3 p-2"
+        class="border-2 m-3 p-2"
         :class="sprint.isActive ? `border-[green]` : `border-[red]`"
     >
         <h1>Title: {{ sprint.title }}</h1>
