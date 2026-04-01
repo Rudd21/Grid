@@ -29,6 +29,12 @@ export class ProjectController {
         return this.projectsService.tasksProject(projectId);
     }
 
+    // Активні задачі
+    @Get(':projectId/activeTask')
+    async activeTasks(@Param('projectId') projectId: string) {
+        return this.projectsService.activeTask(projectId);
+    }
+
     // Всі учасники проєкту
     @Get(':projectId/members')
     async membersProject(@CurrentUser() user: any, @Param('projectId') projectId: string){

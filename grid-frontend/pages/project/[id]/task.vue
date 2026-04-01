@@ -1,32 +1,55 @@
 <script setup lang="ts">
+import { io } from 'socket.io-client';
 import { useModal } from '~/hooks/useModal';
 import CreateSprint from '~/modal/CreateSprint.vue';
 import CreateTask from '~/modal/CreateTask.vue';
 import type { Sprint } from '~/types/sprint';
+import type { Task } from '~/types/task';
 
 const route = useRoute();
 const projectId = route.params.id;
-const sprints = ref()
-const isLoading = ref(false);
+const sprint = ref();
+let socket: any = null;
 
-async function requestSprint() {
+const auth = useAuthStore();
+
+const requestSprint = async() => {
     try{
-        isLoading.value = true
-        const response = await $fetch<Sprint[]>(`http://localhost:8000/project/${projectId}/task`,{
+        const response = await $fetch<Sprint>(`http://localhost:8000/project/${projectId}/activeTask`,{
             'method': 'GET',
             'credentials': 'include'
         })
 
-        sprints.value = response;
+        sprint.value = response;
     }catch(error){
         console.error('Виникла помилка: ', error)
-    }finally{
-        isLoading.value = false
-    }    
+    }
 }
 
-onMounted(()=>{
-    requestSprint()
+onMounted(async ()=>{
+    await requestSprint()
+
+    socket = io('http://localhost:8000',{
+        transports: ['websocket'],
+    });
+
+    socket.emit('joinProject', projectId)
+
+    socket.on('taskUpdate', (updatedTask: any)=>{
+        console.log("Оновлення таски: ", updatedTask);
+
+    const index = sprint.value.tasks.findIndex((t: Task) => t.id === updatedTask.id);
+    if(index != -1){
+        sprint.value.tasks[index] = { ...sprint.value.tasks[index], ...updatedTask}
+    }
+    })
+});
+
+onUnmounted(()=>{
+    if(socket){
+        socket.emit('leaveProject', projectId);
+        socket.disconnect();
+    }
 })
 
 
@@ -38,6 +61,17 @@ async function takeTask(sprintId: string, taskId: string) {
         })
     }catch(error){
         console.error("Виникла помилка при взятті задачі: ", error);
+    }
+}
+
+async function removeTask(sprintId: string, taskId: string) {
+    try{
+        await $fetch(`http://localhost:8000/sprint/${sprintId}/task/${taskId}`,{
+            method: 'DELETE',
+            credentials: 'include'
+        })
+    }catch(error){
+        console.error("Виникла помилка при знятті задачі: ", error);
     }
 }
 
@@ -68,15 +102,13 @@ const openCreateTask = (sprintId: string) => {
 
 <template>
     <div>
-        <h1 v-if="isLoading">Загрузка...</h1>
-
+        <p>Альооо: </p>{{ sprint }}
             <div 
                 class="p-1 m-1 border-2" 
-                v-if="sprints && sprints.length > 0">
+                v-if="sprint">
 
                 <div 
-                    class="m-2 p-1" 
-                    v-for="sprint in sprints">
+                    class="m-2 p-1">
 
                     <div class="flex gap-3">
                         <h1>Спринт: {{ sprint.title }}</h1>
@@ -108,8 +140,15 @@ const openCreateTask = (sprintId: string) => {
                                 </button>
                                 <button 
                                     v-else
-                                    class="p-2 bg-gray-600 text-white rounded-[5px]"
-                                    >Задача взята користувачем: {{ task.user.name }}
+                                    class="p-2 mr-2 bg-gray-600 text-white rounded-[5px]"
+                                    >Задача взята користувачем: {{ task.user }}
+                                </button>
+                                <button 
+                                    v-if="auth.userId == task.user?.id"
+                                    @click="removeTask(sprint.id, task.id)"
+                                    class="w-5 h-5 bg-red-600 text-white rounded-[5px]"
+                                    >
+                                    x
                                 </button>
                             </div>
                         </div>
@@ -124,14 +163,10 @@ const openCreateTask = (sprintId: string) => {
                 </div>
             </div>
 
-            <div v-else-if="!sprints || sprints.length == 0">
+            <div v-else="!sprint">
                 <h1>Спринтів немає, створіть</h1>
                 <button class="p-2 m-3 text-white bg-green-400" @click="openCreateSprint">Створити спринт</button>
             </div>
 
-
-        <div v-else>
-            <h1>Виникла помилка</h1>
-        </div>
     </div>
 </template>

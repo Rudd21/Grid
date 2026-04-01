@@ -6,15 +6,16 @@ export const useAuthStore = defineStore('auth', {
         isInitialized: false,
     }),
     getters: {
-        isLoggedIn: (state) => !!state.user
+        isLoggedIn: (state) => !!state.user,
+        userId: (state) => state.user?.sub || null
     },
     actions: {
         async fetchUser() {
             try{
                 // Використовуй саме $fetch для екшенів
                 const data = await $fetch('http://localhost:8000/auth/profile', {
-                method: 'GET',
-                credentials: 'include',
+                    method: 'GET',
+                    credentials: 'include',
                 })
                 
                 this.user = data
@@ -27,7 +28,6 @@ export const useAuthStore = defineStore('auth', {
 
         async logout(){
             try{
-                // Використовуй саме $fetch для екшенів
                 await $fetch('http://localhost:8000/auth/logout', {
                     method: 'POST',
                     credentials: 'include',

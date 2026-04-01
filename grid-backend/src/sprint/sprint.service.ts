@@ -25,6 +25,36 @@ export class SprintService {
         })
     }
 
+    async activeSprint(projectId: string){
+        const sprints = await this.prisma.sprint.findMany({
+            where: {id_project: projectId},
+            include: {
+                tasks:{
+                    select:{
+                        id: true,
+                        title: true,
+                        description: true,
+                        difficulty: true,
+                        taken_at: true,
+                        user: true
+                    }
+                }
+            }
+        })
+
+        const now = new Date();
+        
+        return sprints.map(sprint => {
+            if(now >= new Date(sprint.start_date) && now <= new Date(sprint.end_date)){
+                return{
+                    ...sprint,
+                    isActive: true
+                }
+            }
+        })
+
+    }
+
     async createSprint(projectId: string, dto: CreateSprintDto){
 
         const start = new Date(dto.start_date);

@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { ProjectGateway } from 'src/gateway/project.gateway';
+import { ProjectService } from 'src/project/project.service';
 
 @Injectable()
 export class TaskService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private projectService: ProjectService
+    ) {}
 
     async manyTask(sprintId: string) {
         return this.prisma.task.findMany({
@@ -19,11 +24,25 @@ export class TaskService {
     }
 
     async takeTask(userId: string, taskId: string) {
-        return this.prisma.task.update({
+        const updatedTask = await this.prisma.task.update({
             where: {id: taskId},
             data: {
                 taken_at: new Date(),
                 id_user: userId
+            }
+        })
+
+        this.projectService.sendTaskUpdate(updatedTask.id_project, updatedTask)
+
+        return updatedTask
+    }
+
+    async removeTask(taskId: string) {
+        return this.prisma.task.update({
+            where: {id: taskId},
+            data: {
+                taken_at: null,
+                id_user: null
             }
         })
     }

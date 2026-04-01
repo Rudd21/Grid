@@ -1,12 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UserRole } from '@prisma/client';
+import { ProjectGateway } from 'src/gateway/project.gateway';
 
 @Injectable()
 export class ProjectService {
-    constructor(private prisma: PrismaService){}
+    constructor(
+        private prisma: PrismaService,
+        @Inject(forwardRef(()=> ProjectGateway))
+        private readonly projectGateway: ProjectGateway
+    ){}
 
+
+    // Сокет
+    sendTaskUpdate(projectId: string, data: any){
+        this.projectGateway.notifyTaskUpdate(projectId, data)
+    }    
+
+    // Контролери
     async findAllMyProjects(userId: string) {
         const memberships = await this.prisma.member.findMany({
             where: {
@@ -51,6 +63,21 @@ export class ProjectService {
                         user: true
                     }
                 }
+            }
+        })
+    }
+
+    async activeTask(projectId: string) {
+        const now = new Date();
+
+        return await this.prisma.sprint.findFirst({
+            where:{
+                id_project: projectId,
+                start_date: {lte: now},
+                end_date: {gte: now}
+            },
+            include:{
+                tasks: true,
             }
         })
     }

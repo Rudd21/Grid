@@ -25,6 +25,11 @@ export class TaskController {
         return this.taskService.takeTask(userId, taskId)
     }
 
+    @Delete(':taskId')
+    async removeTask(@CurrentUser('sub') userId: string, @Param('taskId') taskId: string){
+        return this.taskService.removeTask(taskId)
+    }
+
     @UseGuards(ProjectAccessGuard)
     @Post()
     async createTask(@Query('projectId') projectId: string, @Param('sprintId') sprintId: string, @Body() dto: CreateTaskDto){
