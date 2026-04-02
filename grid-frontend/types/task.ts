@@ -1,3 +1,5 @@
+import type { User } from "./user";
+
 export enum TaskStatus {
   EASY = "EASY",
   MEDIUM = "MEDIUM",
@@ -14,6 +16,7 @@ export interface Task {
     
     taken_at?: string;
     id_user?: string
+    user?: User
 }
 
 export interface CreateTaskDto {

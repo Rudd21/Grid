@@ -29,7 +29,8 @@ export class TaskService {
             data: {
                 taken_at: new Date(),
                 id_user: userId
-            }
+            },
+            include: {user: true}
         })
 
         this.projectService.sendTaskUpdate(updatedTask.id_project, updatedTask)
@@ -38,13 +39,18 @@ export class TaskService {
     }
 
     async removeTask(taskId: string) {
-        return this.prisma.task.update({
+        const updatedTask = await this.prisma.task.update({
             where: {id: taskId},
             data: {
                 taken_at: null,
                 id_user: null
-            }
+            },
+            include: {user: true}
         })
+
+        this.projectService.sendTaskUpdate(updatedTask.id_project, updatedTask)
+
+        return updatedTask
     }
     
     async createTask(projectId: string, sprintId: string, dto: CreateTaskDto) {

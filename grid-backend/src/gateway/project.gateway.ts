@@ -19,6 +19,7 @@ export class ProjectGateway{
     @SubscribeMessage('leaveProject')
     handleLeaveProject(client: Socket, projectId: string){
         client.leave(projectId);
+        console.log(`User ${client.id} leave project: ${projectId}`)
     }
 
     notifyTaskUpdate(projectId: string, data: any){

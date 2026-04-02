@@ -77,7 +77,16 @@ export class ProjectService {
                 end_date: {gte: now}
             },
             include:{
-                tasks: true,
+                tasks: {
+                    select:{
+                        id: true,
+                        title: true,
+                        description: true,
+                        difficulty: true,
+                        taken_at: true,
+                        user: true
+                    }
+                }
             }
         })
     }

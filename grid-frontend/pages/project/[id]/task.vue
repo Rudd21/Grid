@@ -8,8 +8,7 @@ import type { Task } from '~/types/task';
 
 const route = useRoute();
 const projectId = route.params.id;
-const sprint = ref();
-let socket: any = null;
+const sprint = ref<Sprint | null>(null);
 
 const auth = useAuthStore();
 
@@ -26,6 +25,7 @@ const requestSprint = async() => {
     }
 }
 
+let socket: any = null;
 onMounted(async ()=>{
     await requestSprint()
 
@@ -38,10 +38,16 @@ onMounted(async ()=>{
     socket.on('taskUpdate', (updatedTask: any)=>{
         console.log("Оновлення таски: ", updatedTask);
 
-    const index = sprint.value.tasks.findIndex((t: Task) => t.id === updatedTask.id);
-    if(index != -1){
-        sprint.value.tasks[index] = { ...sprint.value.tasks[index], ...updatedTask}
-    }
+        if(!sprint.value || !sprint.value.tasks) return;
+
+        const index = sprint.value.tasks.findIndex((t: Task) => t.id === updatedTask.id);
+
+        if(index != -1){
+            sprint.value.tasks = sprint.value.tasks.map((t: Task) =>
+                t.id === updatedTask.id ? {...t, ...updatedTask} : t 
+            );
+            console.log("Масив оновлено: ", sprint.value.tasks[index]);
+        }
     })
 });
 
@@ -102,7 +108,6 @@ const openCreateTask = (sprintId: string) => {
 
 <template>
     <div>
-        <p>Альооо: </p>{{ sprint }}
             <div 
                 class="p-1 m-1 border-2" 
                 v-if="sprint">
@@ -133,23 +138,24 @@ const openCreateTask = (sprintId: string) => {
                             </span>
                             <div>
                                 <button 
-                                    v-if="!task.taken_at" 
+                                    v-if="!task.user" 
                                     @click="takeTask(sprint.id, task.id)"
                                     class="p-2 bg-blue-600 text-white rounded-[5px]"
                                     >Взяти задачу
                                 </button>
-                                <button 
-                                    v-else
-                                    class="p-2 mr-2 bg-gray-600 text-white rounded-[5px]"
-                                    >Задача взята користувачем: {{ task.user }}
-                                </button>
-                                <button 
-                                    v-if="auth.userId == task.user?.id"
-                                    @click="removeTask(sprint.id, task.id)"
-                                    class="w-5 h-5 bg-red-600 text-white rounded-[5px]"
-                                    >
-                                    x
-                                </button>
+                                <div v-else>
+                                    <button 
+                                        class="p-2 mr-2 bg-gray-600 text-white rounded-[5px]"
+                                        >Задача взята користувачем: {{ task.user.name }}
+                                    </button>
+                                    <button 
+                                        v-if="auth.userId == task.user?.id"
+                                        @click="removeTask(sprint.id, task.id)"
+                                        class="w-5 h-5 bg-red-600 text-white rounded-[5px]"
+                                        >
+                                        x
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
