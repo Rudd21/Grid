@@ -27,6 +27,6 @@ html, body {
 }
 main{
   background-image: url("../grid-frontend/public/grid-bg.jpg");
-  background-size: cover;
+  background-size: 50%;
 }
 </style>

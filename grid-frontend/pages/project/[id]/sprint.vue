@@ -10,7 +10,8 @@ const sprintList = ref();
 const activeSprint = ref(false)
 
 interface SprintType extends Sprint{
-    isActive: boolean
+    isActive: boolean;
+    _count: number;
 }
 
 async function reqSprints() {
@@ -51,13 +52,22 @@ const openModal = ()=>{
     <div
         v-for="sprint in sprintList"
         :key="sprint.id"
-        class="border-2 m-3 p-2"
+        class="border m-3 p-2"
         :class="sprint.isActive ? `border-[green]` : `border-[red]`"
     >
-        <h1>Title: {{ sprint.title }}</h1>
-        <p>Start Date: {{ sprint.start_date }}</p>
-        <p>End date: {{ sprint.end_date }}</p>
-        <p>{{ sprint.isActive ? "Активний" : "Завершений" }}</p>
+        <div class="flex justify-between">
+            <h1 class="p-1">{{ sprint.title }}</h1>
+            <button class="p-1">Edit</button>
+        </div>
+        <div class="flex justify-between items-center border p-2">
+            <div>
+                <p>Start Date: {{ formatDate(sprint.start_date) }}</p>
+                <p>End date: {{ formatDate(sprint.end_date) }} ({{ sprint.deadline }} днів)</p>
+            </div>
+            
+            <p>Count of tasks: {{ sprint._count.tasks }}</p>
+            <p>Status: {{ sprint.isActive ? "Активний" : "Завершений" }}</p> 
+        </div>
     </div>
     <button class="p-2 m-3 text-white bg-green-400" @click="openModal">Створити спринт</button>
 </template>

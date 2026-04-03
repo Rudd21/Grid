@@ -10,50 +10,34 @@ export class SprintService {
     async requestSprint(projectId: string){
         const sprints = await this.prisma.sprint.findMany({
             where: {id_project: projectId},
-            include: {tasks: true}
+            include: {
+                tasks: true,
+                _count:{
+                    select:{
+                        tasks: true
+                    }
+                }
+                
+            }
         })
 
         const now = new Date();
 
         return sprints.map(sprint => {
             const isActive = now >= new Date(sprint.start_date) && now <= new Date(sprint.end_date);
+            const deadline = new Date(sprint.end_date);
+
+            const diffMs = deadline.getTime() - now.getTime()
+            const diffDays = Math.ceil(diffMs / (1000*60*60*24))
 
             return {
                 ...sprint,
-                isActive
+                isActive,
+                deadline: diffDays < 0 ? 0 : diffDays,
             }
         })
     }
 
-    async activeSprint(projectId: string){
-        const sprints = await this.prisma.sprint.findMany({
-            where: {id_project: projectId},
-            include: {
-                tasks:{
-                    select:{
-                        id: true,
-                        title: true,
-                        description: true,
-                        difficulty: true,
-                        taken_at: true,
-                        user: true
-                    }
-                }
-            }
-        })
-
-        const now = new Date();
-        
-        return sprints.map(sprint => {
-            if(now >= new Date(sprint.start_date) && now <= new Date(sprint.end_date)){
-                return{
-                    ...sprint,
-                    isActive: true
-                }
-            }
-        })
-
-    }
 
     async createSprint(projectId: string, dto: CreateSprintDto){
 

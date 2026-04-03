@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import AppDrawer from './AppDrawer.vue';
+
+const isDrawerOpen = ref(false)
+
+const openDrawer = ()=>{
+    isDrawerOpen.value = true
+}
 
 const auth = useAuthStore();
 
@@ -51,7 +58,7 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
                 
                 <nav v-else>
                     <div v-if="auth.user" class="flex gap-3">
-                        <NuxtLink href="/login">Profile</NuxtLink>
+                        <button @click="openDrawer">Profile</button>
                         <button @click="auth.logout">Logout</button>
                     </div>
 
@@ -64,4 +71,10 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
             </li>
         </ul>
     </nav>
+
+    <AppDrawer :isOpen="isDrawerOpen" @close="isDrawerOpen = false">
+        <h2>Hello</h2>
+        <p>world</p>
+    </AppDrawer>
+
 </template>
