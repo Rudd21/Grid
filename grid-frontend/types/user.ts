@@ -7,6 +7,7 @@ export interface User {
     name: string;
     password: string;
 
+    skills: string[];
     membership?: Member[];
     tasks?: Task[];
 }

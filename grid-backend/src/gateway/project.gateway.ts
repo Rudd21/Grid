@@ -8,7 +8,7 @@ import { Server, Socket } from "socket.io";
 
 export class ProjectGateway{
     @WebSocketServer()
-    server: Server;
+    server!: Server;
 
     @SubscribeMessage('joinProject')
     handleJoinProject(client: Socket, projectId: string){

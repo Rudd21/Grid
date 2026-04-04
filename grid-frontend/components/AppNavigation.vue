@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { useAuthStore } from '#imports';
 import AppDrawer from './AppDrawer.vue';
+
+const auth = useAuthStore();
+const profile = ref<any>(null);
 
 const isDrawerOpen = ref(false)
 
@@ -7,7 +11,31 @@ const openDrawer = ()=>{
     isDrawerOpen.value = true
 }
 
-const auth = useAuthStore();
+async function reqProfile() {
+    try{
+        const responce = await $fetch(`http://localhost:8000/users/${auth.userId}`,{
+            method: 'GET',
+            credentials: 'include'
+        })
+
+        profile.value = responce;
+    }catch(error){
+        console.error("Виникла помилка запит профілю")
+    }
+}
+
+onMounted(()=>{
+    if(auth.isInitialized && auth.userId){
+        reqProfile();
+    }
+
+    watch(() => auth.isInitialized, (initialized)=>{
+        if(initialized && auth.userId){
+            reqProfile();
+        }
+    })
+})
+
 
 interface NavigationList {
     nav1: string;
@@ -73,8 +101,38 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
     </nav>
 
     <AppDrawer :isOpen="isDrawerOpen" @close="isDrawerOpen = false">
-        <h2>Hello</h2>
-        <p>world</p>
+        <p>ID: {{ profile.id }}</p>
+        <h1>{{ profile.name }}</h1>
+        <p>Email: {{ profile.email }}</p>
+        <p>Skills: {{ profile.skills }}</p>
+        <h2>Tasks that you taked:</h2>
+        <div 
+            v-for="task in profile.tasks"
+            class="flex justify-between p-2 border"
+        >
+            <div>
+                <p>title: {{ task.title }}</p>
+                <p>Difficulty: {{ task.difficulty }}</p>
+                <p>Description: {{ task.description }}</p>
+            </div>
+            <div class="flex flex-col justify-center">
+                <button class="p-1 m-1 rounded-[5px] bg-gray-700 text-white">
+                    Зняти задачу
+                </button>
+                <button class="p-1 m-1 rounded-[5px] bg-red-700 text-white">
+                    Перекинути задачу
+                </button>
+            </div>
+        </div>
+        <div class="flex p-2">
+            <p class="p-2">Something wrong? you can fix it:</p>
+            <NuxtLink 
+                class="p-2 bg-blue-600 text-white rounded-[5px]"
+                :to="`/profile/${auth.userId}`"
+            >
+                Edit profile
+            </NuxtLink>
+        </div>
     </AppDrawer>
 
 </template>

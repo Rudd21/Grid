@@ -27,6 +27,7 @@ export class SprintService {
             const isActive = now >= new Date(sprint.start_date) && now <= new Date(sprint.end_date);
             const deadline = new Date(sprint.end_date);
 
+            // ЗМІНИТИ
             const diffMs = deadline.getTime() - now.getTime()
             const diffDays = Math.ceil(diffMs / (1000*60*60*24))
 
