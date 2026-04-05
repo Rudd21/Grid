@@ -20,6 +20,9 @@ model User {
   skills String[]
   membership Member[]
   tasks Task[]
+
+  receivedNotifications Notification[] @relation("received")
+  sentNotifications Notification[] @relation("sent")
 }
 
 model Project {
@@ -75,6 +78,8 @@ model Task {
   difficulty TaskStatus @default(MEDIUM)
   taken_at DateTime?
 
+  notification Notification[]
+
   user User? @relation(fields: [id_user], references: [id])
   id_user String?
 
@@ -89,4 +94,26 @@ enum TaskStatus {
   EASY
   MEDIUM
   HARD
+}
+
+model Notification {
+  id String @id @default(uuid())
+  type NotificationType
+  message String
+  isRead Boolean @default(false)
+  created_at DateTime @default(now())
+
+  receiver User @relation("received", fields: [id_receiver], references: [id])
+  id_receiver String
+
+  sender User @relation("sent", fields: [id_sender], references: [id])
+  id_sender String
+
+  task Task? @relation(fields: [id_task], references: [id])
+  id_task String?
+}
+
+enum NotificationType {
+  TASK_RECOMMEND
+  TASK_TRANSFER  
 }

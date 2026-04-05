@@ -1,3 +1,6 @@
+import type { Project } from "./project";
+import type { User } from "./user";
+
 export enum UserRole {
   OWNER = "OWNER",
   MANAGER = "MANAGER",
@@ -7,7 +10,11 @@ export enum UserRole {
 export interface Member {
     id: string;
     role: UserRole
+
+    user: User
     userId: string
+
+    project: Project
     projectId: string
 }
 

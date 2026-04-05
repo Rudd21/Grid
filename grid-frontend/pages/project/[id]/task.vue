@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { io } from 'socket.io-client';
 import { useModal } from '~/hooks/useModal';
+import CreateNotification from '~/modal/CreateNotification.vue';
 import CreateSprint from '~/modal/CreateSprint.vue';
 import CreateTask from '~/modal/CreateTask.vue';
 import type { Sprint } from '~/types/sprint';
@@ -102,7 +103,15 @@ const openCreateTask = (sprintId: string) => {
     })
 }
 
-
+const openNotification = (taskId: string) =>{
+    modal.open({
+        component: CreateNotification,
+        props: {
+            projectId,
+            taskId
+        }
+    })
+}
 
 </script>
 
@@ -137,12 +146,17 @@ const openCreateTask = (sprintId: string) => {
                                 Difficulty: {{ task.difficulty }}
                             </span>
                             <div>
-                                <button 
-                                    v-if="!task.user" 
-                                    @click="takeTask(sprint.id, task.id)"
-                                    class="p-2 bg-blue-600 text-white rounded-[5px]"
-                                    >Взяти задачу
-                                </button>
+                                <div v-if="!task.user">
+                                    <button 
+                                        @click="takeTask(sprint.id, task.id)"
+                                        class="p-2 bg-blue-600 text-white rounded-[5px]"
+                                        >Взяти задачу
+                                    </button>
+                                    <button
+                                        @click="openNotification(task.id)"
+                                        class="p-2 bg-blue-400 text-white rounded-[5px]"
+                                    >Назначити</button>
+                                </div>
                                 <div v-else>
                                     <button 
                                         class="p-2 mr-2 bg-gray-600 text-white rounded-[5px]"

@@ -5,11 +5,13 @@ import AppDrawer from './AppDrawer.vue';
 const auth = useAuthStore();
 const profile = ref<any>(null);
 
-const isDrawerOpen = ref(false)
+const isDrawerOpen = ref(false);
+const notificationState = ref(false);
+const notifications = ref<Notification | null>(null);
 
-const openDrawer = ()=>{
-    isDrawerOpen.value = true
-}
+// const openDrawer = ()=>{
+//     isDrawerOpen.value = true
+// }
 
 async function reqProfile() {
     try{
@@ -24,14 +26,27 @@ async function reqProfile() {
     }
 }
 
+async function reqNotification() {
+    try{
+        notifications.value = await $fetch(`http://localhost:8000/notification/${auth.userId}`,{
+            method: 'GET',
+            credentials: 'include'
+        })
+    }catch(error){
+        console.error("Виникла помилка запиту сповіщень")
+    }
+}
+
 onMounted(()=>{
     if(auth.isInitialized && auth.userId){
         reqProfile();
+        reqNotification()
     }
 
     watch(() => auth.isInitialized, (initialized)=>{
         if(initialized && auth.userId){
             reqProfile();
+            reqNotification()
         }
     })
 })
@@ -85,9 +100,28 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
                 <div v-if="!auth.isInitialized">Заватаження...</div>
                 
                 <nav v-else>
-                    <div v-if="auth.user" class="flex gap-3">
-                        <button @click="openDrawer">Profile</button>
-                        <button @click="auth.logout">Logout</button>
+                    <div v-if="auth.user">
+                        <div class="flex gap-3">
+                            <NuxtLink :to="`/profile/${auth.userId}`">Profile</NuxtLink>
+                            <button @click="notificationState = true" >Notification</button>
+                            <button @click="auth.logout">Logout</button>
+                        </div>
+
+                        <!-- Notification bar -->
+                        <div 
+                            v-if="notificationState"
+                            class="absolute z-20 flex w-50 flex-col border bg-white p-5 rounded-[5px]"
+                        >
+                            <button 
+                                @click="notificationState = false"
+                            >
+                                ✕
+                            </button>
+                            <div v-for="notification in notifications">
+                                <p>{{ notification.message }}</p>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div v-else class="flex gap-3">

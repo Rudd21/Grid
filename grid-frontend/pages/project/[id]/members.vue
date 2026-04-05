@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useModal } from '~/hooks/useModal';
 import AddMember from '~/modal/AddMember.vue';
+import CreateNotification from '~/modal/CreateNotification.vue';
 import type { Member } from '~/types/member';
 
 
@@ -29,11 +30,21 @@ onMounted(()=>{
 
 const modal = useModal();
 
-const openModal = () => {
+const openMember = () => {
     modal.open({
         component: AddMember,
         props: {
             projectId: projectId
+        }
+    })
+}
+
+const openNotification = (userId: string) =>{
+    modal.open({
+        component: CreateNotification,
+        props: {
+            projectId: projectId,
+            receiverId: userId
         }
     })
 }
@@ -49,7 +60,8 @@ const openModal = () => {
             :class="member.role == 'OWNER' ? 'text-red-500' : 'text-gray-500'"
             >{{ member.role }}</p>
             <p>Email: {{ member.user.email }}</p>
+            <button @click="openNotification(member.userId)">Назначити задачу</button>
         </div>
-        <button class="mt-2 p-2 bg-green-300" @click="openModal">+ Добавити користувача</button>
+        <button class="mt-2 p-2 bg-green-300" @click="openMember">+ Добавити користувача</button>
     </div>
 </template>

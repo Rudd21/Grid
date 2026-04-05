@@ -8,9 +8,10 @@ import { ProjectModule } from './project/project.module';
 import { SprintModule } from './sprint/sprint.module';
 import { TaskService } from './task/task.service';
 import { TaskModule } from './task/task.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, ProjectModule, SprintModule, TaskModule],
+  imports: [PrismaModule, UsersModule, AuthModule, ProjectModule, SprintModule, TaskModule, NotificationModule],
   controllers: [AppController],
   providers: [AppService, TaskService],
 })
