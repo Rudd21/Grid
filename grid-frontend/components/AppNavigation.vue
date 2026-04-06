@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useAuthStore } from '#imports';
+import { NotificationType } from '~/types/notification';
 import AppDrawer from './AppDrawer.vue';
 
+const route = useRoute();
+const projectId = route.params.id;
 const auth = useAuthStore();
 const profile = ref<any>(null);
 
@@ -9,9 +12,9 @@ const isDrawerOpen = ref(false);
 const notificationState = ref(false);
 const notifications = ref<Notification | null>(null);
 
-// const openDrawer = ()=>{
-//     isDrawerOpen.value = true
-// }
+const openDrawer = ()=>{
+    isDrawerOpen.value = true
+}
 
 async function reqProfile() {
     try{
@@ -51,33 +54,19 @@ onMounted(()=>{
     })
 })
 
+async function makeAsRead() {
+    try{
 
-interface NavigationList {
-    nav1: string;
-    nav2: string;
-    nav3: string;
-    nav4: string;
-}
-
-const navigationMap: Record<string, NavigationList>={
-    project:{
-        nav1: 'Project',
-        nav2: 'Tasks',
-        nav3: 'Statistic',
-        nav4: 'Members',
+    }catch(error){
+        console.error("Виникла помилка при позначенні повідомлення як прочитаного")
     }
 }
-
-const activeNav =  ref('project');
-
-const currentNav = computed(()=> navigationMap[activeNav.value])
 
 </script>
 
 <template>
     <nav
-        class="group border-2 border-[black] m-1 border- font-[Open Sans] p-3"
-        @mouseleave="activeNav = 'none'"    
+        class="group border-2 border-[black] h-[75px] m-1 border- font-[Open Sans] p-3"  
     >
         <ul class="flex justify-around items-center">
             <li class="flex items-center gap-5">
@@ -85,8 +74,7 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
                 <h1 class="font-bold text-blue-600">Grid</h1>
                 <div>
                     <a
-                        href="/project"
-                        :class="['group p-3 rounded-[5px] transition', activeNav === 'project' ? 'text-[#FF7F11]' : 'hover:text-[#FF7F11]']" 
+                        href="/project" 
                     >My projects</a>
                 </div>
             </li>
@@ -102,7 +90,7 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
                 <nav v-else>
                     <div v-if="auth.user">
                         <div class="flex gap-3">
-                            <NuxtLink :to="`/profile/${auth.userId}`">Profile</NuxtLink>
+                            <button @click="openDrawer()">Profile</button>
                             <button @click="notificationState = true" >Notification</button>
                             <button @click="auth.logout">Logout</button>
                         </div>
@@ -110,15 +98,25 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
                         <!-- Notification bar -->
                         <div 
                             v-if="notificationState"
-                            class="absolute z-20 flex w-50 flex-col border bg-white p-5 rounded-[5px]"
+                            class="absolute z-20 flex w-50 right-20 flex-col border bg-white p-5 rounded-[5px]"
                         >
                             <button 
                                 @click="notificationState = false"
+                                class="text-red-600"
                             >
                                 ✕
                             </button>
                             <div v-for="notification in notifications">
+                                <div>
+                                    <p>{{ notification.type == NotificationType.TASK_RECOMMEND ? "Рекомендація задачі " : "Передача задачі " }}</p>
+                                    <p>від: {{ notification.id_sender }}</p>
+                                </div>
                                 <p>{{ notification.message }}</p>
+                                <NuxtLink 
+                                    class="text-blue-600" 
+                                    :to="`${notification.id_task}/task`"
+                                    @click="makeAsRead()"
+                                    >Завдання</NuxtLink>
                             </div>
                         </div>
 
@@ -163,6 +161,7 @@ const currentNav = computed(()=> navigationMap[activeNav.value])
             <NuxtLink 
                 class="p-2 bg-blue-600 text-white rounded-[5px]"
                 :to="`/profile/${auth.userId}`"
+                @click="isDrawerOpen = false"
             >
                 Edit profile
             </NuxtLink>

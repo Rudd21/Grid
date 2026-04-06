@@ -11,10 +11,15 @@ onMounted(()=>{
 <template>
   <ModalProvider>
     <div class="flex flex-col min-h-screen">
-      <AppNavigation />
+      <ClientOnly>
+        <AppNavigation />
+        <template #fallback>
+          <div class="group border-2 border-[black] h-[75px] m-1 border- font-[Open Sans] p-3"></div>
+        </template>
+      </ClientOnly>
       <main class="flex-grow">
         <NuxtPage />
-      </main>
+        </main>
       <AppFooter />
     </div>
   </ModalProvider>
