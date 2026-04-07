@@ -36,7 +36,7 @@ async function submitForm(args: RegisterForm){
 </script>
 
 <template>
-    <div class="bg-white border border-2 border-black m-auto my-[10%] w-[30%] p-2">
+    <div class="bg-white border-2 border-black m-auto my-[10%] w-[30%] p-2">
         <h1 class="text-center font-bold text-[25px] text-blue-600">Register form</h1>
         <form class="flex flex-col gap-5" @submit.prevent="submitForm(form)">
             <label class="flex flex-col m-auto">

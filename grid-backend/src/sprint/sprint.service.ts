@@ -7,7 +7,7 @@ import { CreateSprintDto } from './dto/create-sprint.dto';
 export class SprintService {
     constructor(private prisma: PrismaService){}
 
-    async requestSprint(projectId: string){
+    async requestSprints(projectId: string){
         const sprints = await this.prisma.sprint.findMany({
             where: {id_project: projectId},
             include: {
@@ -39,6 +39,14 @@ export class SprintService {
         })
     }
 
+    async requestSprint(sprintId: string){
+        return this.prisma.sprint.findUnique({
+            where: {id: sprintId},
+            include:{
+                tasks: true
+            }
+        })
+    }
 
     async createSprint(projectId: string, dto: CreateSprintDto){
 

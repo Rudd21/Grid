@@ -10,8 +10,13 @@ export class SprintController {
     constructor(private readonly sprintService: SprintService){}
 
     @Get()
-    async requestSprint(@Param('projectId') projectId: string){
-        return this.sprintService.requestSprint(projectId);
+    async requestSprints(@Param('projectId') projectId: string){
+        return this.sprintService.requestSprints(projectId);
+    }
+
+    @Get(':sprintId')
+    async requestSprint(@Param('sprintId') sprintId: string){
+        return this.sprintService.requestSprint(sprintId)
     }
 
     @UseGuards(ProjectAccessGuard)

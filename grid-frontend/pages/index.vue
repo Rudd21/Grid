@@ -41,10 +41,10 @@ const currentContent = computed(() => solutionMap[activeTab.value])
 </script>
 
 <template>
-  <div class="p-8 border border-2 border-[black]  bg-white flex-grow m-10">
-    <div class="bannerText text-center border border-2 border-[black] w-[90%] p-10 m-auto">
+  <div class="p-8 bg-[#FFF8F8] border-2 border-[black] w-[80%] mt-10 m-auto flex-grow">
+    <div class="bannerText text-center border-2 border-[black] w-[90%] p-10 m-auto">
       <img src="./banner.png" alt="">
-      <h1 class="text-[90px] text-blue-600">Grid</h1>
+      <h1 class="text-[90px] text-[#1B56FD]">Grid</h1>
       <p>Instrument for planning and assigning development tasks.</p>
     </div>
     <h2 class="text-center mt-5">There you can find many solutions for your IT project</h2>
@@ -53,7 +53,7 @@ const currentContent = computed(() => solutionMap[activeTab.value])
         v-for="(content, key) in solutionMap" 
         :key="key"
         @click="activeTab = key"
-        :class="['px-4 py-2 rounded', activeTab === key ? 'bg-blue-600 text-white' : 'bg-white']"
+        :class="['px-4 py-2 rounded', activeTab === key ? 'bg-[#1B56FD] text-white' : 'bg-white']"
         class="p-3 border border-[#262626] rounded-[5px]">
           {{ key }}
         </button>

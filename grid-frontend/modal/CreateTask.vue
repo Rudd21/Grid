@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TaskStatus, type CreateTaskDto } from '~/types/task';
 
-
 const props = defineProps<{sprintId:string}>();
 
 const route = useRoute();

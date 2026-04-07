@@ -32,13 +32,13 @@ export class NotificationService {
     })
   }
 
-  update(notificationId: string, updateNotificationDto: UpdateNotificationDto) {
+  update(notificationId: string) {
     return this.prisma.notification.update({
       where: {
         id: notificationId
       },
       data: {
-        isRead: updateNotificationDto.isRead
+        isRead: true
       }
     })
   }

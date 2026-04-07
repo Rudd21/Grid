@@ -27,8 +27,8 @@ export class NotificationController {
   }
 
   @Patch(':notificationId')
-  update(@Param('notificationId') notificationId: string, @Body() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationService.update(notificationId, updateNotificationDto);
+  update(@Param('notificationId') notificationId: string) {
+    return this.notificationService.update(notificationId);
   }
 
   @Delete(':notificationId')

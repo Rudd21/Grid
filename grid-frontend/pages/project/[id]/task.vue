@@ -4,6 +4,7 @@ import { useModal } from '~/hooks/useModal';
 import CreateNotification from '~/modal/CreateNotification.vue';
 import CreateSprint from '~/modal/CreateSprint.vue';
 import CreateTask from '~/modal/CreateTask.vue';
+import TaskM from '~/modal/TaskM.vue';
 import type { Sprint } from '~/types/sprint';
 import type { Task } from '~/types/task';
 
@@ -62,7 +63,7 @@ onUnmounted(()=>{
 
 async function takeTask(sprintId: string, taskId: string) {
     try{
-        await $fetch(`http://localhost:8000/sprint/${sprintId}/task/${taskId}`,{
+        await $fetch(`http://localhost:8000/task/${taskId}`,{
             method: 'PATCH',
             credentials: 'include'
         })
@@ -73,7 +74,7 @@ async function takeTask(sprintId: string, taskId: string) {
 
 async function removeTask(sprintId: string, taskId: string) {
     try{
-        await $fetch(`http://localhost:8000/sprint/${sprintId}/task/${taskId}`,{
+        await $fetch(`http://localhost:8000/task/${taskId}`,{
             method: 'DELETE',
             credentials: 'include'
         })
@@ -108,6 +109,15 @@ const openNotification = (taskId: string) =>{
         component: CreateNotification,
         props: {
             projectId,
+            taskId
+        }
+    })
+}
+
+const openTask = (taskId: string) =>{
+    modal.open({
+        component: TaskM,
+        props:{
             taskId
         }
     })
@@ -149,13 +159,19 @@ const openNotification = (taskId: string) =>{
                                 <div v-if="!task.user">
                                     <button 
                                         @click="takeTask(sprint.id, task.id)"
-                                        class="p-2 bg-blue-600 text-white rounded-[5px]"
+                                        class="p-2 bg-blue-600 text-white mr-5 rounded-[5px]"
                                         >Взяти задачу
                                     </button>
                                     <button
+                                        @click="openTask(task.id)"
+                                        class="p-2 bg-gray-400 text-white rounded-[5px]"
+                                    >
+                                        Детальніше
+                                    </button>
+                                    <!-- <button
                                         @click="openNotification(task.id)"
                                         class="p-2 bg-blue-400 text-white rounded-[5px]"
-                                    >Назначити</button>
+                                    >Назначити</button> -->
                                 </div>
                                 <div v-else>
                                     <button 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { CreateSprintDto } from '~/types/sprint';
 
-
 const props = defineProps<{projectId: string}>();
 
 const isSuccess = ref(false);

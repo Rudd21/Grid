@@ -2,11 +2,15 @@
 import { useAuthStore } from '#imports';
 import { NotificationType } from '~/types/notification';
 import AppDrawer from './AppDrawer.vue';
+import { useModal } from '~/hooks/useModal';
+import TaskM from '~/modal/TaskM.vue';
 
 const route = useRoute();
 const projectId = route.params.id;
 const auth = useAuthStore();
 const profile = ref<any>(null);
+
+let pollingInterval: ReturnType<typeof setInterval> | null = null
 
 const isDrawerOpen = ref(false);
 const notificationState = ref(false);
@@ -25,7 +29,7 @@ async function reqProfile() {
 
         profile.value = responce;
     }catch(error){
-        console.error("Виникла помилка запит профілю")
+        console.error("Виникла помилка запит профілю: ", error)
     }
 }
 
@@ -36,7 +40,30 @@ async function reqNotification() {
             credentials: 'include'
         })
     }catch(error){
-        console.error("Виникла помилка запиту сповіщень")
+        console.error("Виникла помилка запиту сповіщень: ", error)
+    }
+}
+
+async function makeAsRead(notifId: string) {
+    try{
+        await $fetch(`http://localhost:8000/notification/${notifId}`,{
+            method: 'PATCH',
+            credentials: 'include'
+        })
+    }catch(error){
+        console.error("Виникла помилка при позначенні повідомлення як прочитаного: ", error)
+    }
+}
+
+async function deleteNotification(notifId: string) {
+    try{
+        await $fetch(`http://localhost:8000/notification/${notifId}`,{
+            method: 'DELETE',
+            credentials: 'include'
+        })
+        reqNotification()
+    }catch(error){
+        console.error('Виникла помилка при видалені сповіщення: ', error)
     }
 }
 
@@ -44,29 +71,40 @@ onMounted(()=>{
     if(auth.isInitialized && auth.userId){
         reqProfile();
         reqNotification()
+        pollingInterval = setInterval(reqNotification, 1000 * 30);
     }
 
     watch(() => auth.isInitialized, (initialized)=>{
         if(initialized && auth.userId){
             reqProfile();
             reqNotification()
+            pollingInterval = setInterval(reqNotification, 1000 * 30);
         }
     })
 })
 
-async function makeAsRead() {
-    try{
-
-    }catch(error){
-        console.error("Виникла помилка при позначенні повідомлення як прочитаного")
+onUnmounted(()=>{
+    if(pollingInterval){
+        clearInterval(pollingInterval)
     }
+})
+
+const modal = useModal();
+
+const openTask = (taskId: string) =>{
+    modal.open({
+        component: TaskM,
+        props:{
+            taskId
+        }
+    })
 }
 
 </script>
 
 <template>
     <nav
-        class="group border-2 border-[black] h-[75px] m-1 border- font-[Open Sans] p-3"  
+        class="group bg-[#FFF8F8] mt-3 border-2 border-[black] h-[75px] w-[95%] rounded-[15px] m-auto p-3"  
     >
         <ul class="flex justify-around items-center">
             <li class="flex items-center gap-5">
@@ -110,13 +148,25 @@ async function makeAsRead() {
                                 <div>
                                     <p>{{ notification.type == NotificationType.TASK_RECOMMEND ? "Рекомендація задачі " : "Передача задачі " }}</p>
                                     <p>від: {{ notification.id_sender }}</p>
+                                    <p>{{ notification.isRead }}</p>
                                 </div>
                                 <p>{{ notification.message }}</p>
-                                <NuxtLink 
-                                    class="text-blue-600" 
-                                    :to="`${notification.id_task}/task`"
-                                    @click="makeAsRead()"
-                                    >Завдання</NuxtLink>
+                                <div class="flex justify-between">
+                                    <button 
+                                        class="text-blue-600" 
+                                        @click="
+                                            makeAsRead(notification.id);
+                                            notificationState = false;
+                                            openTask(notification.id_task)
+                                        "
+                                        >Завдання</button>
+                                    <button 
+                                        class="p-1 bg-red-500 text-white"
+                                        @click="deleteNotification(notification.id)"    
+                                    >
+                                        Видалити
+                                    </button>
+                                </div>
                             </div>
                         </div>
 

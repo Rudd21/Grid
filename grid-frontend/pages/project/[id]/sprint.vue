@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useModal } from '~/hooks/useModal';
 import CreateSprint from '~/modal/CreateSprint.vue';
+import SprintM from '~/modal/SprintM.vue';
 import type { Sprint } from '~/types/sprint';
 
 
@@ -46,6 +47,18 @@ const openModal = ()=>{
     })
 }
 
+const openSprint = (sprint: Sprint) =>{
+    modal.open({
+        component: SprintM,
+        props: {
+            title: sprint.title,
+            start_date: sprint.start_date,
+            end_date: sprint.end_date,
+            sprintId: sprint.id
+        }
+    })
+}
+
 </script>
 
 <template>
@@ -57,7 +70,12 @@ const openModal = ()=>{
     >
         <div class="flex justify-between">
             <h1 class="p-1">{{ sprint.title }}</h1>
-            <button class="p-1">Edit</button>
+            <button
+                @click="openSprint(sprint)"
+                class="p-1 m-1 bg-gray-400 text-white rounded-[5px]"
+            >
+                Відредагувати
+            </button>
         </div>
         <div class="flex justify-between items-center border p-2">
             <div>

@@ -5,11 +5,11 @@ import { IsEnum, IsString, MinLength } from "class-validator";
 export class CreateTaskDto {
     @IsString()
     @MinLength(3, {message: "Мінімальна довжина назви завдання"})
-    title: string;
+    title!: string;
 
     @IsString()
-    description: string;
+    description!: string;
 
     @IsEnum(TaskStatus, {message: "Вказано варіант якого не існує"})
-    difficulty: TaskStatus
+    difficulty!: TaskStatus
 }

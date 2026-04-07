@@ -10,11 +10,11 @@ onMounted(()=>{
 
 <template>
   <ModalProvider>
-    <div class="flex flex-col min-h-screen">
+    <div class="flex flex-col min-h-screen bg-[#E9DFC3]">
       <ClientOnly>
         <AppNavigation />
         <template #fallback>
-          <div class="group border-2 border-[black] h-[75px] m-1 border- font-[Open Sans] p-3"></div>
+          <div class="group bg-[#FFF8F8] mt-3 border-2 border-[black] h-[75px] w-[95%] rounded-[15px] m-auto p-3"></div>
         </template>
       </ClientOnly>
       <main class="flex-grow">
@@ -27,11 +27,10 @@ onMounted(()=>{
 
 <style>
 html, body {
-  font-family: 'Comic sans', sans-serif;
   @apply antialiased text-gray-800;
 }
 main{
-  background-image: url("../grid-frontend/public/grid-bg.jpg");
+  font-family: "Boldonse", sans-serif;
   background-size: 50%;
 }
 </style>
