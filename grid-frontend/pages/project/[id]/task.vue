@@ -114,11 +114,16 @@ const openNotification = (taskId: string) =>{
     })
 }
 
-const openTask = (taskId: string) =>{
+const openTask = (task: Task) =>{
     modal.open({
         component: TaskM,
         props:{
-            taskId
+            projectId: projectId,
+            taskId: task.id,
+            title: task.title,
+            description: task.description,
+            difficulty: task.difficulty,
+            onUpdated: () => requestSprint()
         }
     })
 }
@@ -163,7 +168,7 @@ const openTask = (taskId: string) =>{
                                         >Взяти задачу
                                     </button>
                                     <button
-                                        @click="openTask(task.id)"
+                                        @click="openTask(task)"
                                         class="p-2 bg-gray-400 text-white rounded-[5px]"
                                     >
                                         Детальніше

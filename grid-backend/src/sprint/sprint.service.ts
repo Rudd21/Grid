@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSprintDto } from './dto/create-sprint.dto';
+import { UpdateSprintDto } from './dto/update-sprint.dto';
 
 @Injectable()
 export class SprintService {
@@ -63,6 +64,17 @@ export class SprintService {
                 start_date: start,
                 end_date: end,
                 id_project: projectId
+            }
+        })
+    }
+
+    async updateSprint(sprintId: string, dto: UpdateSprintDto){
+        return this.prisma.sprint.update({
+            where: {id: sprintId},
+            data:{
+                title: dto.title,
+                start_date: new Date(dto.start_date),
+                end_date: new Date(dto.end_date)
             }
         })
     }

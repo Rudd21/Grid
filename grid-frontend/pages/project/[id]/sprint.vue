@@ -54,8 +54,9 @@ const openSprint = (sprint: Sprint) =>{
             title: sprint.title,
             start_date: sprint.start_date,
             end_date: sprint.end_date,
-            sprintId: sprint.id
-        }
+            sprintId: sprint.id,
+            onUpdated: () => reqSprints()
+        },
     })
 }
 

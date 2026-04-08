@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { ProjectGateway } from 'src/gateway/project.gateway';
 import { ProjectService } from 'src/project/project.service';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TaskService {
@@ -20,6 +21,15 @@ export class TaskService {
     async pickTask(taskId: string) {
         return this.prisma.task.findUnique({
             where: {id: taskId}
+        })
+    }
+
+    async updateTask(taskId: string, dto: UpdateTaskDto){
+        return this.prisma.task.update({
+            where: {id: taskId},
+            data:{
+                ...dto
+            }
         })
     }
 

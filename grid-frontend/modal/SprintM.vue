@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { CreateSprintDto, Sprint } from '~/types/sprint';
 
-
 const props = defineProps<{
     title: string,
     start_date: string,
@@ -9,13 +8,16 @@ const props = defineProps<{
     sprintId: string;
 }>();
 
+const emit = defineEmits(['updated'])
+
 const route = useRoute()
 const projectId = route.params.id as string;
 const sprint = ref<Sprint | null>(null);
+const formState = ref();
 
 async function reqSprint() {
     try{
-        sprint.value = await $fetch(`http://localhost:8000/project/${projectId}/sprint/${props.sprintId}`,{
+        sprint.value = await $fetch(`http://localhost:8000/sprint/${props.sprintId}`,{
             method: 'GET',
             credentials: 'include'
         })
@@ -30,9 +32,25 @@ onMounted(()=>{
 
 const form = reactive<CreateSprintDto>({
     title: props.title ?? '', 
-    start_date: props.start_date ?? '', 
-    end_date: props.end_date ?? '', 
+    start_date: props.start_date?.split('T')[0] ?? '', 
+    end_date: props.end_date?.split('T')[0] ?? '', 
 })
+
+async function sentForm() {
+    try{
+        formState.value = 'Оновлюється...'
+        await $fetch(`http://localhost:8000/sprint/${sprint.value?.id}`,{
+            method: 'PATCH',
+            body: form,
+            credentials: 'include'
+        })
+        formState.value = 'Успішно відправлено'
+        emit('updated')
+    }catch(error){
+        console.error("Виникла помилка при оновленні спринта: ", error)
+        formState.value = 'Виникла помилка при відправлені'
+    }
+}
 
 </script>
 
@@ -59,23 +77,22 @@ const form = reactive<CreateSprintDto>({
                 </p>
             </div>
         </section>
-        <section class="flex flex-col m-5">
-            <form class="flex flex-col justify-between" action="submit" @submit.prevent="">
-                <h2>Налаштування спринту:</h2>
-                <label>
-                    Змінити назву:
-                    <input v-model="form.title" type="text" name="" id="">
-                </label>
-                <label>
-                    Змінити дату початку:
-                    <input v-model="form.start_date" type="date" name="" id="">
-                </label>
-                <label>
-                    Змінити дату кінця:
-                    <input v-model="form.end_date" type="date" name="" id="">
-                </label>
-                <button class="p-2 bg-green-400">Оновити</button>
-            </form>
-        </section>
+        <form class="flex flex-col m-5 justify-between" action="submit" @submit.prevent="sentForm()">
+            <h2>Налаштування спринту:</h2>
+            <label>
+                Змінити назву:
+                <input v-model="form.title" type="text" name="" id="">
+            </label>
+            <label>
+                Змінити дату початку:
+                <input v-model="form.start_date" type="date" name="" id="">
+            </label>
+            <label>
+                Змінити дату кінця:
+                <input v-model="form.end_date" type="date" name="" id="">
+            </label>
+            <button class="p-2 bg-green-400">Оновити</button>
+            <p v-if="formState">{{ formState }}</p>
+        </form>
 </div>
 </template>

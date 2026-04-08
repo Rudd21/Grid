@@ -4,6 +4,7 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { ProjectAccessGuard } from 'src/common/guards/project.guards';
 import { AuthGuard } from 'src/common/guards/auth.guards';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 // task.controller.ts — операції з конкретною таскою по taskId
 @UseGuards(AuthGuard)
@@ -14,6 +15,11 @@ export class TaskController {
     @Get(':taskId')
     async requestTask(@Param('taskId') taskId: string){
         return this.taskService.pickTask(taskId)
+    }
+
+    @Patch(':taskId')
+    async updateTask(@Param('taskId') taskId: string, @Body() dto: UpdateTaskDto){
+        return this.taskService.updateTask(taskId, dto)
     }
 
     @Patch(':taskId/take')
