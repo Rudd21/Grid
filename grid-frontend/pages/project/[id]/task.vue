@@ -63,7 +63,7 @@ onUnmounted(()=>{
 
 async function takeTask(sprintId: string, taskId: string) {
     try{
-        await $fetch(`http://localhost:8000/task/${taskId}`,{
+        await $fetch(`http://localhost:8000/task/${taskId}/take`,{
             method: 'PATCH',
             credentials: 'include'
         })
@@ -74,7 +74,7 @@ async function takeTask(sprintId: string, taskId: string) {
 
 async function removeTask(sprintId: string, taskId: string) {
     try{
-        await $fetch(`http://localhost:8000/task/${taskId}`,{
+        await $fetch(`http://localhost:8000/task/${taskId}/take`,{
             method: 'DELETE',
             credentials: 'include'
         })

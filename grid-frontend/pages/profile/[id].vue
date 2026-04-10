@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { User } from '~/types/user';
+import type { UpdateUserDto, User } from '~/types/user';
 
 const route = useRoute();
 
@@ -22,6 +22,25 @@ async function reqProfile() {
 onMounted(()=>{
     reqProfile()
 })
+
+const form = reactive<UpdateUserDto>({
+    name: '',
+    newPassword: '',
+    oldPassword: '',
+    skills: []
+})
+
+async function updateProfile(){
+    try{
+        await $fetch('http://localhost:8000/users',{
+            method: 'PUT',
+            body: form,
+            credentials: 'include'
+        })
+    }catch(error){
+
+    }
+}
 
 </script>
 

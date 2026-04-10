@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import * as bcrypt from 'bcrypt'
 import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
 export class UsersService{
@@ -21,13 +22,11 @@ export class UsersService{
         });
     }
 
-    async changeSkills(userId: string, skills: string[]) {
-        
-        const cleanSkills = skills;
-
+    async update(userId: string, dto: UpdateUserDto) {
         return this.prisma.user.update({
             where: {id: userId},
             data: {
+                
             }
         })
     }

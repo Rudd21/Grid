@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { AuthGuard } from "src/common/guards/auth.guards";
 import { CurrentUser } from "src/common/decorators/user.decorator";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Controller('users')
 export class UsersController {
@@ -13,9 +14,9 @@ export class UsersController {
         return this.usersService.create(CreateUserDto);
     }
 
-    @Patch()
-    changeSkills(@CurrentUser('sub') userId: string, @Body() skills: string[]){
-        return this.usersService.changeSkills(userId, skills);
+    @Put()
+    updateProfile(@CurrentUser('sub') userId: string, @Body() dto: UpdateUserDto){
+        return this.usersService.update(userId, dto);
     }
 
     @UseGuards(AuthGuard)

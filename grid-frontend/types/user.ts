@@ -17,3 +17,11 @@ export interface CreateUserDto{
     email: string;
     password: string;
 }
+
+export interface UpdateUserDto{
+    name: string;
+    newPassword: string;
+    oldPassword: string;
+    
+    skills: string[];
+}

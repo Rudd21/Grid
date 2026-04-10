@@ -136,7 +136,9 @@ const openTask = (taskId: string) =>{
                         <!-- Notification bar -->
                         <div 
                             v-if="notificationState"
+                            v-for="notification in notifications"
                             class="absolute z-20 flex w-50 right-20 flex-col border bg-white p-5 rounded-[5px]"
+                            :class="notifications"
                         >
                             <button 
                                 @click="notificationState = false"
@@ -144,11 +146,14 @@ const openTask = (taskId: string) =>{
                             >
                                 ✕
                             </button>
-                            <div v-for="notification in notifications">
-                                <div>
+                            <div
+                                class="p-2" 
+                                :class="notification.isRead ? `bg-[#FFF8F8]` : `bg-[#E9DFC3]` "
+                            >
+                                <div
+                                >
                                     <p>{{ notification.type == NotificationType.TASK_RECOMMEND ? "Рекомендація задачі " : "Передача задачі " }}</p>
                                     <p>від: {{ notification.id_sender }}</p>
-                                    <p>{{ notification.isRead }}</p>
                                 </div>
                                 <p>{{ notification.message }}</p>
                                 <div class="flex justify-between">
