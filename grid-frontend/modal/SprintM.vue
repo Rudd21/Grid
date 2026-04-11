@@ -94,5 +94,5 @@ async function sentForm() {
             <button class="p-2 bg-green-400">Оновити</button>
             <p v-if="formState">{{ formState }}</p>
         </form>
-</div>
+    </div>
 </template>

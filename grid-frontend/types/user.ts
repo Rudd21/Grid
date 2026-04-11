@@ -7,7 +7,7 @@ export interface User {
     name: string;
     password: string;
 
-    skills: string[];
+    skills: number;
     membership?: Member[];
     tasks?: Task[];
 }
@@ -23,5 +23,5 @@ export interface UpdateUserDto{
     newPassword: string;
     oldPassword: string;
     
-    skills: string[];
+    skills: number;
 }

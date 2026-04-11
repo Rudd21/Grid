@@ -41,10 +41,30 @@ export class UsersService{
         })
     }
 
-    async findProfile(userId: string){
-        return this.prisma.user.findUnique({
-            where: {id: userId},
-            include: {tasks:true}
-        })
+    // Спільні проєкти з користувачем
+    async crossProject(userId: string, targetUserId: string){
+        const [user, crossProjects] = await Promise.all([
+            // Профіль користувача
+            this.prisma.user.findUnique({
+                where: {id: targetUserId},
+                select: {id: true, name: true, skills: true}
+            }),
+
+            this.prisma.project.findMany({
+                where:{
+                    members:{
+                        some: {userId: userId}
+                    },
+                    AND:{
+                        members:{
+                            some: {userId: targetUserId}
+                        }
+                    }
+                },
+                select:{id: true, title: true}
+            })
+        ])
+
+        return {user, crossProjects}
     }
 }

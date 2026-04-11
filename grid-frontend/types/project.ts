@@ -24,3 +24,8 @@ export interface CreateProjectDto {
     description: string;
     status: ProjectStatus;
 }
+
+export interface CrossProject {
+    id: string,
+    title: string
+}

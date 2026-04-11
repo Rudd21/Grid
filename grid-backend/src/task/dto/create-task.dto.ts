@@ -13,6 +13,6 @@ export class CreateTaskDto {
     @IsEnum(TaskStatus, {message: "Вказано варіант якого не існує"})
     difficulty!: TaskStatus
 
-    @IsUUID()
+    @IsUUID(4, {message: "Невірний формат ID спринту"})
     id_sprint!: string
 }

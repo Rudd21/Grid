@@ -14,7 +14,7 @@ export class ProjectAccessGuard implements CanActivate {
         const projectId = request.params.projectId || request.query.projectId;
 
         if(!userId || !projectId){
-            throw new BadRequestException("Project ID is missaing")    
+            throw new BadRequestException("Project ID is missing")    
         }
 
         const member = await this.prisma.member.findUnique({

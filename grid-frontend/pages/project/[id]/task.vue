@@ -119,6 +119,7 @@ const openTask = (task: Task) =>{
         component: TaskM,
         props:{
             projectId: projectId,
+            sprintId: task.id_sprint,
             taskId: task.id,
             title: task.title,
             description: task.description,

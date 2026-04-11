@@ -27,7 +27,7 @@ export class UsersController {
 
     @UseGuards(AuthGuard)
     @Get(':userId')
-    reqProfile(@Param('userId') userId: string){
-        return this.usersService.findProfile(userId)
+    reqProfile(@CurrentUser('sub') userId: string, @Param('userId') targetUserId: string){
+        return this.usersService.crossProject(userId, targetUserId)
     }
 }

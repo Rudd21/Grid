@@ -192,7 +192,7 @@ const openTask = (projectId: string, taskId: string) =>{
         <p>ID: {{ profile.id }}</p>
         <h1>{{ profile.name }}</h1>
         <p>Email: {{ profile.email }}</p>
-        <p>Skills: {{ profile.skills }}</p>
+        <p>Skills: {{ profile.skills }} year</p>
         <h2>Tasks that you taked:</h2>
         <div 
             v-for="task in profile.tasks"

@@ -24,3 +24,10 @@ export interface CreateTaskDto {
     description: string;
     difficulty: TaskStatus;
 }
+
+export interface UpdateTaskDto{
+    title: string;
+    description: string;
+    difficulty: TaskStatus;
+    id_sprint: string;
+}
