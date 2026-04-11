@@ -5,16 +5,22 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { ProjectAccessGuard } from 'src/common/guards/project.guards';
 import { AuthGuard } from 'src/common/guards/auth.guards';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { SprintService } from 'src/sprint/sprint.service';
 
 // task.controller.ts — операції з конкретною таскою по taskId
 @UseGuards(AuthGuard)
 @Controller('task')
 export class TaskController {
-    constructor(private readonly taskService: TaskService){}
+    constructor(private readonly taskService: TaskService, private readonly sprintService: SprintService){}
 
     @Get(':taskId')
-    async requestTask(@Param('taskId') taskId: string){
-        return this.taskService.pickTask(taskId)
+    async requestTaskWithSprint(@Param('taskId') taskId: string, @Query('projectId') projectId: string){
+        const [task, sprints] = await Promise.all([
+            this.taskService.pickTask(taskId),
+            this.sprintService.requestSprintList(projectId)
+        ])
+
+        return {task, sprints}
     }
 
     @Patch(':taskId')

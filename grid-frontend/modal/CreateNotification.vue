@@ -8,7 +8,7 @@ import type { Task } from '~/types/task';
 const props = defineProps<{
     projectId: string,
     receiverId?: string, 
-    taskId?: string
+    taskId?: string,
 }>();
 
 const members = ref<Member[] | null>(null);
@@ -46,14 +46,15 @@ const form = reactive<CreateNotificationDto>({
     message: '',
     id_receiver: props.receiverId ?? '',
     id_task: props.taskId ?? '',
+    id_project: props.projectId
 })
 
 async function submitForm() {
     try{
         await $fetch('http://localhost:8000/notification',{
             method: 'POST',
-            credentials: 'include',
-            body: form
+            body: form,
+            credentials: 'include'
         })
     }catch(error){
         console.error("Виникла помилка при створенні сповіщення: ", error)

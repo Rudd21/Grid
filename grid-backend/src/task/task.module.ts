@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
-import { ProjectService } from 'src/project/project.service';
 import { ProjectModule } from 'src/project/project.module';
+import { SprintModule } from 'src/sprint/sprint.module';
 
 @Module({
-  imports: [ProjectModule],
+  imports: [ProjectModule, SprintModule],
   controllers: [TaskController],
   providers: [TaskService]
 })

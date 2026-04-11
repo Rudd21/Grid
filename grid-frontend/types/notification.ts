@@ -1,3 +1,4 @@
+import type { Project } from "./project"
 import type { Task } from "./task"
 import type { User } from "./user"
 
@@ -21,11 +22,15 @@ export interface Notification {
 
     task?: Task,
     id_task?: string
+
+    project?: Project,
+    id_project?: string
 }
 
 export interface CreateNotificationDto {
     type: NotificationType,
     message: string,
     id_receiver?: string,
-    id_task?: string
+    id_task?: string,
+    id_project?: string
 }

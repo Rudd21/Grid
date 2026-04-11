@@ -49,6 +49,16 @@ export class SprintService {
         })
     }
 
+    async requestSprintList(projectId: string){
+        return this.prisma.sprint.findMany({
+            where: {id_project: projectId},
+            select: {
+                id: true,
+                title: true
+            }
+        })
+    }
+
     async createSprint(projectId: string, dto: CreateSprintDto){
 
         const start = new Date(dto.start_date);

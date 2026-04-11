@@ -1,5 +1,5 @@
 import { TaskStatus } from "@prisma/client";
-import { IsEnum, IsString, MinLength } from "class-validator";
+import { IsEnum, IsString, IsUUID, MinLength } from "class-validator";
 
 
 export class CreateTaskDto {
@@ -12,4 +12,7 @@ export class CreateTaskDto {
 
     @IsEnum(TaskStatus, {message: "Вказано варіант якого не існує"})
     difficulty!: TaskStatus
+
+    @IsUUID()
+    id_sprint!: string
 }

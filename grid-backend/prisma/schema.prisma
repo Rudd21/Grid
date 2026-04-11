@@ -33,6 +33,7 @@ model Project {
   members Member[]
   sprints Sprint[]
   tasks Task[]
+  notification Notification[]
 }
 
 enum ProjectStatus {
@@ -111,6 +112,9 @@ model Notification {
 
   task Task? @relation(fields: [id_task], references: [id])
   id_task String?
+
+  project Project? @relation(fields: [id_project], references: [id])
+  id_project String?
 }
 
 enum NotificationType {

@@ -91,10 +91,11 @@ onUnmounted(()=>{
 
 const modal = useModal();
 
-const openTask = (taskId: string) =>{
+const openTask = (projectId: string, taskId: string) =>{
     modal.open({
         component: TaskM,
         props:{
+            projectId,
             taskId
         }
     })
@@ -162,7 +163,7 @@ const openTask = (taskId: string) =>{
                                         @click="
                                             makeAsRead(notification.id);
                                             notificationState = false;
-                                            openTask(notification.id_task)
+                                            openTask(notification.id_project, notification.id_task)
                                         "
                                         >Завдання</button>
                                     <button 

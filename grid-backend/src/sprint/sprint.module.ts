@@ -4,6 +4,7 @@ import { ProjectSprintController, SprintController } from './sprint.controller';
 
 @Module({
   providers: [SprintService],
-  controllers: [SprintController, ProjectSprintController]
+  controllers: [SprintController, ProjectSprintController],
+  exports: [SprintService]
 })
 export class SprintModule {}

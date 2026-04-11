@@ -38,7 +38,7 @@ async function updateProfile(){
             credentials: 'include'
         })
     }catch(error){
-
+        console.error("Невдалося")
     }
 }
 

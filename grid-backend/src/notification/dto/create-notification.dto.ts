@@ -14,4 +14,7 @@ export class CreateNotificationDto {
     
     @IsUUID('4', {message: "Невірний формат ID задачі"})
     id_task!: string
+
+    @IsUUID(4, {message: "Невірний формат ID проєкту"})
+    id_project!: string
 }
