@@ -6,12 +6,6 @@ export class UpdateUserDto {
     @MinLength(3, {message: "Мінімальний розмір імені"})
     name!: string;
 
-    @MinLength(5, {message: "Мінімальний розмір паролю"})
-    newPassword!: string;
-
-    @MinLength(5, {message: "Мінімальний розмір паролю"})
-    oldPassword!: string;
-
-    @IsArray({message: "Скіли мають бути масивом"})
-    skills!: [];
+    @IsArray({message: "Скіли мають бути числом"})
+    skills!: number;
 }

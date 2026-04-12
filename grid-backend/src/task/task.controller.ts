@@ -6,6 +6,7 @@ import { ProjectAccessGuard } from 'src/common/guards/project.guards';
 import { AuthGuard } from 'src/common/guards/auth.guards';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { SprintService } from 'src/sprint/sprint.service';
+import { CommitTaskDto } from './dto/commit-task.dto';
 
 // task.controller.ts — операції з конкретною таскою по taskId
 @UseGuards(AuthGuard)
@@ -26,6 +27,11 @@ export class TaskController {
     @Patch(':taskId')
     async updateTask(@Param('taskId') taskId: string, @Body() dto: UpdateTaskDto){
         return this.taskService.updateTask(taskId, dto)
+    }
+
+    @Patch(':taskId/commit')
+    async commitTask(@Param('taskId') taskId: string, @Body() dto: CommitTaskDto){
+        return this.taskService.commitTask(taskId, dto)
     }
 
     @Patch(':taskId/take')

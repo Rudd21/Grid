@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CrossProject } from '~/types/project';
-import type { UpdateUserDto, User } from '~/types/user';
+import type { User } from '~/types/user';
 
 const route = useRoute();
 
@@ -8,9 +8,13 @@ const auth = useAuthStore();
 const userId = route.params.id;
 const data = ref<{user: User, crossProjects: CrossProject[] } | null>(null);
 
+const profileState = ref('');
+const passwordState = ref('');
+const toUpdatePassword = ref(false);
+
 async function reqProfile() {
     try{
-        data.value = await $fetch(`http://localhost:8000/users/${userId}`,{
+        data.value = await $fetch(`http://localhost:8000/users/${userId}/profile`,{
             method: 'GET',
             credentials: 'include'
         })
@@ -25,9 +29,12 @@ onMounted(()=>{
     reqProfile()
 })
 
-const form = reactive<UpdateUserDto>({
+const form = reactive({
     name: data.value?.user.name ?? '',
     skills:  data.value?.user.skills ?? 1,
+})
+
+const passwordForm = reactive({
     newPassword: '',
     oldPassword: ''
 })
@@ -50,38 +57,59 @@ async function updateProfile(){
     }
 }
 
+async function updatePassword(){
+    try{
+        await $fetch('http://localhost:8000/users',{
+            method: 'PATCH',
+            body: passwordForm,
+            credentials: 'include'
+        })
+    }catch(error){
+        console.error("Невдалося оновити профіль")
+    }
+}
+
 </script>
 
 <template>
     <div class="bg-white flex flex-col justify-start border p-1 m-auto w-[60%] h-[80vh] rounded-[10px]">
-        <div v-if="data" class="flex justify-around items-center">
+        <div v-if="data" class="grid grid-cols-2  gap-2 items-center">
             <div class="flex flex-col items-center">
                 <img src="../public/default-user.png" alt="avatar">
                 <button v-if="auth.userId == userId">Завантажити нове фото</button>
             </div>
             <div>
-                <form v-if="auth.userId == userId" class="flex flex-col gap-2" action="submit" @submi.prevent="">
-                    <label class="flex gap-1">
-                        <p class="text-gray-400">ID:</p> {{ data.user.id }}
+                <div v-if="auth.userId == userId" class="h-15">
+                    <label>
+                        Оновити пароль:
+                        <input @click="toUpdatePassword = !toUpdatePassword" type="checkbox">
                     </label>
-                    <label class="flex gap-1">
-                        <p class="text-gray-400">Name:</p>
-                        <input v-model="form.name" type="text">
-                    </label>
-                    <label class="flex gap-1">
-                        <p class="text-gray-400">Skills:</p>
-                        <input v-model="form.skills" type="number" width="min">
-                    </label>
-                    <label class="flex gap-1">
-                        <p class="text-gray-400">Old Password:</p>
-                        <input v-model="form.oldPassword" type="string">
-                    </label>
-                    <label class="flex gap-1">
-                        <p class="text-gray-400">New Password:</p>
-                        <input v-model="form.newPassword" type="string">
-                    </label>
-                    <button class="p-2 bg-green-400 text-white">Оновити</button>
-                </form>
+                    <form v-if="toUpdatePassword" class="flex flex-col gap-2" action="submit" @submit.prevent="updatePassword">
+                        <label class="flex gap-1">
+                            <p class="text-gray-400">Old Password:</p>
+                            <input v-model="passwordForm.oldPassword" type="string">
+                        </label>
+                        <label class="flex gap-1">
+                            <p class="text-gray-400">New Password:</p>
+                            <input v-model="passwordForm.newPassword" type="string">
+                        </label>
+                        <button class="p-2 bg-blue-600 text-white">Оновити пароль</button>
+                    </form>
+                    <form v-else class="flex flex-col gap-2" action="submit" @submit.prevent="updateProfile">
+                        <label class="flex gap-1">
+                            <p class="text-gray-400">ID:</p> {{ data.user.id }}
+                        </label>
+                        <label class="flex gap-1">
+                            <p class="text-gray-400">Name:</p>
+                            <input v-model="form.name" type="text">
+                        </label>
+                        <label class="flex gap-1">
+                            <p class="text-gray-400">Skills:</p>
+                            <input v-model="form.skills" type="number" width="min">
+                        </label>
+                        <button class="p-2 bg-green-400 text-white">Оновити</button>
+                    </form>
+                </div>
 
                 <div v-else class="flex flex-col gap-2">
                     <p><span class="text-gray-400">ID:</span> {{ data.user.id }}</p>

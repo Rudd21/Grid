@@ -4,6 +4,7 @@ import { NotificationType } from '~/types/notification';
 import AppDrawer from './AppDrawer.vue';
 import { useModal } from '~/hooks/useModal';
 import TaskM from '~/modal/TaskM.vue';
+import CommitM from '~/modal/CommitM.vue';
 
 const route = useRoute();
 const projectId = route.params.id;
@@ -92,10 +93,24 @@ onUnmounted(()=>{
 const modal = useModal();
 
 const openTask = (projectId: string, taskId: string) =>{
+    isDrawerOpen.value = false;
+    notificationState.value = false;
+    
     modal.open({
         component: TaskM,
         props:{
             projectId,
+            taskId
+        }
+    })
+}
+
+const openCommitTask = (taskId: string) => {
+    isDrawerOpen.value = false;
+    
+    modal.open({
+        component: CommitM,
+        props:{
             taskId
         }
     })
@@ -162,7 +177,6 @@ const openTask = (projectId: string, taskId: string) =>{
                                         class="text-blue-600" 
                                         @click="
                                             makeAsRead(notification.id);
-                                            notificationState = false;
                                             openTask(notification.id_project, notification.id_task)
                                         "
                                         >Завдання</button>
@@ -199,7 +213,7 @@ const openTask = (projectId: string, taskId: string) =>{
             class="flex justify-between p-2 border"
         >
             <div>
-                <p>title: {{ task.title }}</p>
+                <button class="text-blue-600" @click="openTask(task.id_project, task.id)">{{ task.title }}</button>
                 <p>Difficulty: {{ task.difficulty }}</p>
                 <p>Description: {{ task.description }}</p>
             </div>
@@ -209,6 +223,9 @@ const openTask = (projectId: string, taskId: string) =>{
                 </button>
                 <button class="p-1 m-1 rounded-[5px] bg-red-700 text-white">
                     Перекинути задачу
+                </button>
+                <button class="p-1 m-1 rounded-[5px] bg-blue-600 text-white" @click="openCommitTask(task.id)">
+                    Закомітити задачу
                 </button>
             </div>
         </div>

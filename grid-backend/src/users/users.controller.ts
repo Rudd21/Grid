@@ -4,6 +4,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { AuthGuard } from "src/common/guards/auth.guards";
 import { CurrentUser } from "src/common/decorators/user.decorator";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Controller('users')
 export class UsersController {
@@ -16,7 +17,12 @@ export class UsersController {
 
     @Put()
     updateProfile(@CurrentUser('sub') userId: string, @Body() dto: UpdateUserDto){
-        return this.usersService.update(userId, dto);
+        return this.usersService.updateProfile(userId, dto);
+    }
+
+    @Patch()
+    updatePassword(@CurrentUser('sub') userId: string, @Body() dto: UpdatePasswordDto){
+        return this.usersService.updatePassword(userId, dto);
     }
 
     @UseGuards(AuthGuard)
@@ -27,6 +33,12 @@ export class UsersController {
 
     @UseGuards(AuthGuard)
     @Get(':userId')
+    reqUser(@CurrentUser('sub') userId: string){
+        return this.usersService.pickUser(userId)
+    }
+
+    @UseGuards(AuthGuard)
+    @Get(':userId/profile')
     reqProfile(@CurrentUser('sub') userId: string, @Param('userId') targetUserId: string){
         return this.usersService.crossProject(userId, targetUserId)
     }

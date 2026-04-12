@@ -2,8 +2,9 @@
 import { useModal } from '~/hooks/useModal';
 import type { Sprint } from '~/types/sprint';
 import { TaskStatus, type CreateTaskDto, type Task, type UpdateTaskDto } from '~/types/task';
-import type { UpdateUserDto, User } from '~/types/user';
+import type { User } from '~/types/user';
 import CreateNotification from './CreateNotification.vue';
+import CommitM from './CommitM.vue';
 
 const props = defineProps<{
     projectId: string,
@@ -122,6 +123,7 @@ const openNotification = (taskId: string) =>{
                 <p v-if="formState">{{ formState }}</p>
             </form>
             <section class="p-8">
+                <p v-if="data?.task.commit">Задача закрита</p>
                 <button 
                     class="bg-blue-600 rounded-[5px] text-white p-2"
                     @click="openNotification(data!.task.id)"

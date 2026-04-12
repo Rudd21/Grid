@@ -13,6 +13,10 @@ export interface Task {
     difficulty: TaskStatus;
     id_sprint: string;
     id_project: string;
+
+    commit: string;
+    commit_description: string;
+    done_at: string;
     
     taken_at?: string;
     id_user?: string
@@ -30,4 +34,10 @@ export interface UpdateTaskDto{
     description: string;
     difficulty: TaskStatus;
     id_sprint: string;
+}
+
+export interface CommitDto{
+    commit: string;
+    commit_description: string;
+    done_at: string;
 }

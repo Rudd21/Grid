@@ -78,6 +78,10 @@ model Task {
   description String?
   difficulty TaskStatus @default(MEDIUM)
   taken_at DateTime?
+  
+  commit String?
+  commit_description String?
+  done_at DateTime?
 
   notification Notification[]
 

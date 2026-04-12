@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import * as bcrypt from 'bcrypt'
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Injectable()
 export class UsersService{
@@ -22,11 +23,38 @@ export class UsersService{
         });
     }
 
-    async update(userId: string, dto: UpdateUserDto) {
+    async updateProfile(userId: string, dto: UpdateUserDto){
         return this.prisma.user.update({
             where: {id: userId},
             data: {
-                
+                ...dto
+            }
+        })
+    }
+
+    async updatePassword(userId: string, dto: UpdatePasswordDto) {
+
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { password: true }
+        })
+
+        if(!user){
+            throw new BadRequestException("Юзер ане знайдено")
+        }
+
+        const isMatch = await bcrypt.compare(dto.oldPassword, user?.password)
+
+        if(!isMatch){
+            throw new BadRequestException("Невірний старий пароль")
+        }
+
+        const hashedPassword = await bcrypt.hash(dto.newPassword, 10)
+
+        return this.prisma.user.update({
+            where: {id: userId},
+            data: {
+                password: hashedPassword
             }
         })
     }
@@ -38,6 +66,15 @@ export class UsersService{
     async findOneNyEmail(email: string){
         return this.prisma.user.findUnique({
             where: {email}
+        })
+    }
+
+    async pickUser(userId: string){
+        return this.prisma.user.findUnique({
+            where: {id: userId},
+            include: {
+                tasks: true
+            }
         })
     }
 

@@ -4,6 +4,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { ProjectGateway } from 'src/gateway/project.gateway';
 import { ProjectService } from 'src/project/project.service';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { CommitTaskDto } from './dto/commit-task.dto';
 
 @Injectable()
 export class TaskService {
@@ -33,6 +34,14 @@ export class TaskService {
         })
     }
 
+    async commitTask(taskId: string, dto: CommitTaskDto){
+        return this.prisma.task.update({
+            where: {id: taskId},
+            data:{
+                ...dto
+            }
+        })
+    }
     async takeTask(userId: string, taskId: string) {
         const updatedTask = await this.prisma.task.update({
             where: {id: taskId},
