@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { io } from 'socket.io-client';
+import { VueDraggable } from 'vue-draggable-plus';
 import { useModal } from '~/hooks/useModal';
 import CreateNotification from '~/modal/CreateNotification.vue';
 import CreateSprint from '~/modal/CreateSprint.vue';
@@ -8,11 +9,19 @@ import TaskM from '~/modal/TaskM.vue';
 import type { Sprint } from '~/types/sprint';
 import type { Task } from '~/types/task';
 
+type Status = 'TODO' | 'DOING' | 'DONE'
+
 const route = useRoute();
 const projectId = route.params.id;
 const sprint = ref<Sprint | null>(null);
 
 const auth = useAuthStore();
+
+const columns = ref<Record<Status, Task[]>>({
+    TODO: [],
+    DOING: [],
+    DONE: []
+})
 
 const requestSprint = async() => {
     try{
@@ -26,6 +35,16 @@ const requestSprint = async() => {
         console.error('Виникла помилка: ', error)
     }
 }
+
+watchEffect(() => {
+  if (!sprint.value?.tasks) return
+
+  columns.value = {
+    TODO: sprint.value.tasks.filter(t => t.status === 'TODO') ?? [],
+    DOING: sprint.value.tasks.filter(t => t.status === 'DOING') ?? [],
+    DONE: sprint.value.tasks.filter(t => t.status === 'DONE') ?? []
+  }
+})
 
 let socket: any = null;
 onMounted(async ()=>{
@@ -140,68 +159,55 @@ const openTask = (task: Task) =>{
                 <div 
                     class="m-2 p-1">
 
-                    <div class="flex gap-3">
+                    <div class="flex justify-between gap-3">
                         <h1>Спринт: {{ sprint.title }}</h1>
                         <div class="flex justify-start gap-3">
-                            <p>Початок: {{ sprint.start_date }}</p>
-                            <p>Кінець: {{ sprint.end_date }}</p>
+                            <p>Початок: {{ formatDate(sprint.start_date) }}</p>
+                            <p>Кінець: {{ formatDate(sprint.end_date) }}</p>
                         </div>
                     </div>
-                    <div 
-                        v-for="task in sprint.tasks" 
-                        :key="task.id"
-                        class="p-2 border rounded bg-gray-50">
-
-                        <div class="flex justify-between items-center">
-                            <span class="font-medium">{{ task.title }}</span>
-                            <p class="text-sm text-gray-600">{{ task.description }}</p>
-                            <span 
-                                class="text-xs px-2 py-1 rounded "
-                                >
-                                
-                                Difficulty: {{ task.difficulty }}
-                            </span>
-                            <div>
-                                <div v-if="!task.user">
-                                    <button 
-                                        @click="takeTask(sprint.id, task.id)"
-                                        class="p-2 bg-blue-600 text-white mr-5 rounded-[5px]"
-                                        >Взяти задачу
-                                    </button>
-                                    <button
+                    <div
+                        class="flex p-2 border rounded bg-gray-50"
+                    >
+                        <div
+                        v-for="(tasks, status) in columns"
+                        :key="status"
+                        class="border w-[300px] m-2 p-2"
+                        >
+                            <h3 class="text-center">{{ status }}</h3>
+                            <hr>
+                            <pre>{{ columns }}</pre>
+                            <VueDraggable
+                                v-model="columns[status as Status]"
+                                group="tasks"
+                                item-key="id"
+                            >
+                                <template #item="{ element: task }">
+                                    <div class="flex justify-between border mt-2 p-2">
+                                        {{ task.title }}
+                                        <div>
+                                        <h4>{{ task.title }}</h4>
+                                        <p class="text-gray-400">{{ task.difficulty }}</p>
+                                        </div>
+                                        <button
                                         @click="openTask(task)"
-                                        class="p-2 bg-gray-400 text-white rounded-[5px]"
-                                    >
-                                        Детальніше
-                                    </button>
-                                    <!-- <button
-                                        @click="openNotification(task.id)"
-                                        class="p-2 bg-blue-400 text-white rounded-[5px]"
-                                    >Назначити</button> -->
-                                </div>
-                                <div v-else>
-                                    <button 
-                                        class="p-2 mr-2 bg-gray-600 text-white rounded-[5px]"
-                                        >Задача взята користувачем: {{ task.user.name }}
-                                    </button>
-                                    <button 
-                                        v-if="auth.userId == task.user?.id"
-                                        @click="removeTask(sprint.id, task.id)"
-                                        class="w-5 h-5 bg-red-600 text-white rounded-[5px]"
+                                        class="text-[25px] w-min text-gray-400"
                                         >
-                                        x
-                                    </button>
-                                </div>
-                            </div>
+                                        •••
+                                        </button>
+                                    </div>
+                                </template>
+                            </VueDraggable>
                         </div>
                     </div>
 
-                    <p v-if="!sprint.tasks?.length">У цьому спринті немає ще задач</p>
+                    <!-- <p v-if="!sprint.tasks?.length" class="text-center text-[25px] text-gray-400 m-10">У цьому спринті немає ще задач</p>
                     <button 
-                        class="p-2 m-2 bg-green-400 text-white" 
-                        @click="openCreateTask(sprint.id)">
-                        
-                        + Додати нову задачу</button>
+                        class="flex items-center p-2 m-2 bg-green-400 text-white" 
+                        @click="openCreateTask(sprint.id)"
+                    >    
+                        + Додати нову задачу
+                    </button> -->
                 </div>
             </div>
 

@@ -76,12 +76,13 @@ model Task {
   id String @id @default(uuid())
   title String
   description String?
-  difficulty TaskStatus @default(MEDIUM)
+  difficulty TaskDifficulty @default(MEDIUM)
   taken_at DateTime?
   
   commit String?
   commit_description String?
   done_at DateTime?
+  status TaskStatus @default(TODO)
 
   notification Notification[]
 
@@ -95,10 +96,16 @@ model Task {
   id_project String
 }
 
-enum TaskStatus {
+enum TaskDifficulty {
   EASY
   MEDIUM
   HARD
+}
+
+enum TaskStatus {
+  TODO
+  DOING
+  DONE
 }
 
 model Notification {

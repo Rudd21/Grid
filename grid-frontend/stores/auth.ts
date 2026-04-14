@@ -19,6 +19,7 @@ export const useAuthStore = defineStore('auth', {
                 })
                 
                 this.user = data
+
             }catch(e){
                 this.user = null
             }finally{

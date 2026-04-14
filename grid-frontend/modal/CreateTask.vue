@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TaskStatus, type CreateTaskDto } from '~/types/task';
+import { TaskDifficulty, type CreateTaskDto } from '~/types/task';
 
 const props = defineProps<{sprintId:string}>();
 
@@ -10,7 +10,7 @@ const isSuccess = ref(false);
 const form = reactive<CreateTaskDto>({
     title: '',
     description: '',
-    difficulty: TaskStatus.MEDIUM
+    difficulty: TaskDifficulty.MEDIUM
 })
 
 async function createTask(args: CreateTaskDto) {

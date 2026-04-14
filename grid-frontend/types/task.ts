@@ -1,18 +1,25 @@
 import type { User } from "./user";
 
-export enum TaskStatus {
+export enum TaskDifficulty {
   EASY = "EASY",
   MEDIUM = "MEDIUM",
   HARD = "HARD"
+}
+
+export enum TaskStatus {
+  TODO = "TODO",
+  DOING = "DOING",
+  DONE = "DONE"
 }
 
 export interface Task {
     id: string;
     title: string;
     description: string;
-    difficulty: TaskStatus;
+    difficulty: TaskDifficulty;
     id_sprint: string;
     id_project: string;
+    status: TaskStatus; 
 
     commit: string;
     commit_description: string;
@@ -26,13 +33,13 @@ export interface Task {
 export interface CreateTaskDto {
     title: string;
     description: string;
-    difficulty: TaskStatus;
+    difficulty: TaskDifficulty;
 }
 
 export interface UpdateTaskDto{
     title: string;
     description: string;
-    difficulty: TaskStatus;
+    difficulty: TaskDifficulty;
     id_sprint: string;
 }
 

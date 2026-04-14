@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { IsDateString, IsEnum, IsString, IsUUID, MinLength } from 'class-validator';
 import { CreateTaskDto } from './create-task.dto';
-import { TaskStatus } from '@prisma/client';
+import { TaskDifficulty } from '@prisma/client';
 
 export class UpdateTaskDto extends PartialType(CreateTaskDto) {
     @IsString()
@@ -11,8 +11,8 @@ export class UpdateTaskDto extends PartialType(CreateTaskDto) {
     @IsString()
     description!: string;
 
-    @IsEnum(TaskStatus, {message: "Вказано варіант якого не існує"})
-    difficulty!: TaskStatus
+    @IsEnum(TaskDifficulty, {message: "Вказано варіант якого не існує"})
+    difficulty!: TaskDifficulty
 
     @IsUUID(4, {message: "Невірний формат ID спринту"})
     id_sprint!: string

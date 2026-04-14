@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useModal } from '~/hooks/useModal';
 import type { Sprint } from '~/types/sprint';
-import { TaskStatus, type CreateTaskDto, type Task, type UpdateTaskDto } from '~/types/task';
+import { TaskDifficulty, type CreateTaskDto, type Task, type UpdateTaskDto } from '~/types/task';
 import type { User } from '~/types/user';
 import CreateNotification from './CreateNotification.vue';
 import CommitM from './CommitM.vue';
@@ -22,7 +22,7 @@ const modal = useModal()
 const form = reactive<UpdateTaskDto>({
     title: data.value?.task.title ?? '',
     description: data.value?.task.description ?? '',
-    difficulty: data.value?.task.difficulty ?? TaskStatus.EASY,
+    difficulty: data.value?.task.difficulty ?? TaskDifficulty.EASY,
     id_sprint: data.value?.task.id_sprint ?? ''
 })
 

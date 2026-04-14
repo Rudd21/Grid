@@ -60,6 +60,7 @@ export class ProjectService {
                         description: true,
                         difficulty: true,
                         taken_at: true,
+                        status: true,
                         user: true
                     }
                 }
@@ -84,6 +85,7 @@ export class ProjectService {
                         description: true,
                         difficulty: true,
                         taken_at: true,
+                        status: true,
                         user: true
                     }
                 }
