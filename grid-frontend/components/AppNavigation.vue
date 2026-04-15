@@ -116,6 +116,18 @@ const openCommitTask = (taskId: string) => {
     })
 }
 
+async function removeTask(sprintId: string, taskId: string) {
+    try{
+        await $fetch(`http://localhost:8000/task/${taskId}/take`,{
+            method: 'DELETE',
+            credentials: 'include'
+        })
+    }catch(error){
+        console.error("Виникла помилка при знятті задачі: ", error);
+    }
+}
+
+
 </script>
 
 <template>
@@ -218,7 +230,7 @@ const openCommitTask = (taskId: string) => {
                 <p>Description: {{ task.description }}</p>
             </div>
             <div class="flex flex-col justify-center">
-                <button class="p-1 m-1 rounded-[5px] bg-gray-700 text-white">
+                <button class="p-1 m-1 rounded-[5px] bg-gray-700 text-white" @click="removeTask(task.id_sprint, task.id)">
                     Зняти задачу
                 </button>
                 <button class="p-1 m-1 rounded-[5px] bg-red-700 text-white">

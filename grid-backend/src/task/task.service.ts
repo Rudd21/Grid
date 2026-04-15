@@ -5,6 +5,7 @@ import { ProjectGateway } from 'src/gateway/project.gateway';
 import { ProjectService } from 'src/project/project.service';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { CommitTaskDto } from './dto/commit-task.dto';
+import { TaskStatus } from '@prisma/client';
 
 @Injectable()
 export class TaskService {
@@ -38,7 +39,8 @@ export class TaskService {
         return this.prisma.task.update({
             where: {id: taskId},
             data:{
-                ...dto
+                ...dto,
+                status: TaskStatus.DONE
             }
         })
     }
@@ -47,7 +49,8 @@ export class TaskService {
             where: {id: taskId},
             data: {
                 taken_at: new Date(),
-                id_user: userId
+                id_user: userId,
+                status: TaskStatus.DOING
             },
             include: {user: true}
         })
@@ -62,7 +65,8 @@ export class TaskService {
             where: {id: taskId},
             data: {
                 taken_at: null,
-                id_user: null
+                id_user: null,
+                status: TaskStatus.TODO
             },
             include: {user: true}
         })

@@ -40,14 +40,6 @@ async function SubmitForm(args: LoginForm){
     }
 }
 
-async function checkCookie() {
-    const {data, error} = await useFetch('http://localhost:8000/auth/profile', {
-        method: 'GET',
-        credentials: 'include'
-    });
-
-}
-
 </script>
 
 <template>
@@ -64,6 +56,5 @@ async function checkCookie() {
             </label>
             <button class="p-3 m-3 bg-green-400">Submit</button>
         </form>
-        <button @click="checkCookie">чек куку</button>
     </div>
 </template>
