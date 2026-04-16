@@ -192,9 +192,6 @@ const openTask = (task: Task) =>{
             projectId: projectId,
             sprintId: task.id_sprint,
             taskId: task.id,
-            title: task.title,
-            description: task.description,
-            difficulty: task.difficulty,
             onUpdated: () => requestSprint()
         }
     })

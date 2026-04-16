@@ -1,3 +1,4 @@
+import type { Comment } from "./comment";
 import type { User } from "./user";
 
 export enum TaskDifficulty {
@@ -20,6 +21,8 @@ export interface Task {
     id_sprint: string;
     id_project: string;
     status: TaskStatus; 
+
+    comment: Comment[]
 
     commit: string;
     commit_description: string;

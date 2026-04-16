@@ -20,6 +20,7 @@ model User {
   skills Int @default(1)
   membership Member[]
   tasks Task[]
+  comment Comment[]
 
   receivedNotifications Notification[] @relation("received")
   sentNotifications Notification[] @relation("sent")
@@ -85,6 +86,7 @@ model Task {
   status TaskStatus @default(TODO)
 
   notification Notification[]
+  comment Comment[]
 
   user User? @relation(fields: [id_user], references: [id])
   id_user String?
@@ -131,4 +133,15 @@ model Notification {
 enum NotificationType {
   TASK_RECOMMEND
   TASK_TRANSFER  
+}
+
+model Comment {
+  id String @id @default(uuid())
+  text String
+
+  task Task @relation(fields: [id_task], references: [id])
+  id_task String
+
+  user User @relation(fields: [id_user], references: [id])
+  id_user String
 }

@@ -33,8 +33,6 @@ provide('modal', modalContext)
 </script>
 
 <template>
-    <slot />
-    
     <teleport to="body">
         <div v-if="isOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center" @click="close">
             <div class="bg-white p-2" @click.stop>
@@ -43,4 +41,6 @@ provide('modal', modalContext)
             </div>
         </div>
     </teleport>
+
+    <slot />
 </template>
