@@ -75,17 +75,17 @@ const isLoading = ref(false);
 </script>
 
 <template>
-    <div class="m-10 flex flex-col h-screen overflow-hidden border-2 border-blue-600/60 rounded-xl">
+    <div class="font-saira m-10 flex flex-col h-screen overflow-hidden border-2 border-blue-600/60 rounded-xl">
         <!-- Work place -->
         <div class="flex min-h-[10%] bg-white/60 items-center">
             <NuxtLink 
-                class=" h-[60%] m-2 text-black px-4 py-2 underline rounded-lg transition-colors shadow-sm"
+                class="font-saira flex items-center h-[60%] m-2 text-black px-4 py-2 underline rounded-lg transition-colors shadow-sm"
                 to="/project"
             >
                 Back to projects
             </NuxtLink>
             |
-            <NuxtLink class="flex p-1 items-center m-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-[5px] transition" href="/createProject">+ Create Project</NuxtLink>
+            <NuxtLink class="font-saira flex p-1 items-center m-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-[5px] transition" href="/createProject">+ Create Project</NuxtLink>
         </div>
 
         <!-- Bookmarks -->
@@ -99,9 +99,9 @@ const isLoading = ref(false);
                         :key="key"
                         :to="`/project/${projectId}${item.to}`"
                         :disabled="!currentProject"
-                        class="flex items-center cursor-pointer text-left text-[20px] min-h-[50px] transition-color disabled:text-gray-400 disabled:bg-gray-200 hover:bg-blue-600 transition"
+                        class=" flex items-center cursor-pointer text-left text-[20px] min-h-[50px] transition-color disabled:text-gray-400 disabled:bg-gray-200 hover:bg-blue-600 transition"
                     >
-                        <p class="ml-2 text-white">{{ item.title }}</p>
+                        <p class="font-boldonse ml-2 text-white">{{ item.title }}</p>
                     </NuxtLink>
                 </div>
             </div>

@@ -70,23 +70,23 @@ const openSprint = (sprint: Sprint) =>{
         :class="sprint.isActive ? `border-[green]` : `border-[red]`"
     >
         <div class="flex justify-between">
-            <h1 class="p-1">{{ sprint.title }}</h1>
+            <h1 class="font-saira p-1">{{ sprint.title }}</h1>
             <button
                 @click="openSprint(sprint)"
-                class="p-1 m-1 bg-gray-400 text-white rounded-[5px]"
+                class="font-saira p-1 m-1 bg-gray-400 text-white rounded-[5px]"
             >
-                Відредагувати
+                Change
             </button>
         </div>
         <div class="flex justify-between items-center border p-2">
             <div>
-                <p>Start Date: {{ formatDate(sprint.start_date) }}</p>
-                <p>End date: {{ formatDate(sprint.end_date) }} ({{ sprint.deadline }} днів)</p>
+                <p class="font-saira">Start Date: {{ formatDate(sprint.start_date) }}</p>
+                <p class="font-saira">End date: {{ formatDate(sprint.end_date) }} ({{ sprint.deadline }} days)</p>
             </div>
             
-            <p>Count of tasks: {{ sprint._count.tasks }}</p>
-            <p>Status: {{ sprint.isActive ? "Активний" : "Завершений" }}</p> 
+            <p class="font-saira">Count of tasks: {{ sprint._count.tasks }}</p>
+            <p class="font-saira">Status: {{ sprint.isActive ? "Active" : "Completed" }}</p> 
         </div>
     </div>
-    <button class="p-2 m-3 text-white bg-green-400" @click="openModal">Створити спринт</button>
+    <button class="font-saira p-3 m-3 text-white bg-green-400" @click="openModal">Create Sprint</button>
 </template>

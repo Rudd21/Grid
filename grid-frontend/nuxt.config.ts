@@ -19,8 +19,8 @@ export default defineNuxtConfig({
           crossorigin: ''
         },
         {
-          rel: 'https://fonts.googleapis.com/css2?family=Boldonse&display=swap',
-          href: 'stylesheet'
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Boldonse&family=Saira:ital,wght@0,100..900;1,100..900&display=swap'
         }
       ]
     }

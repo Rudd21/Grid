@@ -16,5 +16,12 @@ export default <Partial<Config>>{
             testColor: 'red'
         }
     },
+    fontFamily:{
+      boldonse: ['Boldonse', 'sans-serif'],
+      saira: ['Saira', 'sans-serif']
+    },
+    boxShadow:{
+      regular: ['8px 6px 0px 5px #000000']
+    }
   },
 }

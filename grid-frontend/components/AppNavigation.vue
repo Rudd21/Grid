@@ -132,15 +132,18 @@ async function removeTask(sprintId: string, taskId: string) {
 
 <template>
     <nav
-        class="group bg-[#FFF8F8] mt-3 border-2 border-[black] h-[75px] w-[95%] rounded-[15px] m-auto p-3"  
+        class="group shadow-regular font-saira bg-[#FFF8F8] mt-3 border-2 border-[black] h-[75px] w-[95%] m-auto p-3"  
     >
         <ul class="flex justify-around items-center">
             <li class="flex items-center gap-5">
                 <img class="w-10 h-10" src="/logo.png" alt="">
-                <h1 class="font-bold text-blue-600">Grid</h1>
+                <NuxtLink to="/">
+                    <h1 class="font-boldonse font-bold text-blue-600">Grid</h1>
+                </NuxtLink>
                 <div>
                     <a
                         href="/project" 
+                        class="font-saira"
                     >My projects</a>
                 </div>
             </li>
@@ -155,7 +158,7 @@ async function removeTask(sprintId: string, taskId: string) {
                 
                 <nav v-else>
                     <div v-if="auth.user">
-                        <div class="flex gap-3">
+                        <div class="font-saira flex gap-3">
                             <button @click="openDrawer()">Profile</button>
                             <button @click="notificationState = true" >Notification</button>
                             <button @click="auth.logout">Logout</button>

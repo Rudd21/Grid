@@ -10,7 +10,7 @@ onMounted(()=>{
 
 <template>
   <ModalProvider>
-    <div class="flex flex-col min-h-screen bg-[#E9DFC3]">
+    <div class="project flex flex-col min-h-screen bg-[#E9DFC3]">
       <ClientOnly>
         <AppNavigation />
         <template #fallback>
@@ -19,7 +19,7 @@ onMounted(()=>{
       </ClientOnly>
       <main class="flex-grow">
         <NuxtPage />
-        </main>
+      </main>
       <AppFooter />
     </div>
   </ModalProvider>
@@ -28,9 +28,5 @@ onMounted(()=>{
 <style>
 html, body {
   @apply antialiased text-gray-800;
-}
-main{
-  font-family: "Boldonse", sans-serif;
-  background-size: 50%;
 }
 </style>

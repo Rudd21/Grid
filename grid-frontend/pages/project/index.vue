@@ -70,18 +70,18 @@ async function bookmarkRequest(endPoint: string) {
 
 <template>
     <div class="m-5 flex flex-col h-screen overflow-hidden">
-        <div class="flex flex-col bg-white items-center min-h-[50vh] w-[20%] m-auto border-2 border-blue-600 rounded-xl">
+        <div class="flex flex-col shadow-regular bg-white items-center min-h-[50vh] w-[20%] m-auto border-2 border-black">
             <NuxtLink
                 v-for="project in projectList" 
                 :key="project.id"
                 @click="currentProject = project.id"
                 :class="[currentProject === project.id ? 'underline' : 'hover:bg-blue-600 hover:text-white']" 
-                class="bg-white m-2 text-black px-4 py-2 rounded-lg transition-colors shadow-sm"
+                class="bg-white w-full text-center m-3 text-black px-4 py-2 transition-colors shadow-sm"
                 :to="`/project/${project.id}`"
             >
                 {{ project.title }}
             </NuxtLink>
-            <NuxtLink class="flex p-1 items-center m-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-[5px] transition" href="/createProject">+ Create Project</NuxtLink>
+            <NuxtLink class="p-1 w-full text-center m-2 text-green-400 hover:text-white hover:bg-green-400 transition" href="/createProject">+ Create Project</NuxtLink>
         </div>
     </div>
 
