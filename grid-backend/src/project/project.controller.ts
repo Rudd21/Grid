@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Body, UseGuards, Get, Delete, Param, Put } from '@nestjs/common';
+import { Controller, Post, Req, Body, UseGuards, Get, Delete, Param, Put, Query } from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/auth.guards';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectService } from './project.service';
@@ -6,11 +6,17 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { ProjectAccessGuard } from 'src/common/guards/project.guards';
 import { UserRole } from '@prisma/client';
 
-@UseGuards(AuthGuard)
 @Controller('project')
 export class ProjectController {
     constructor(private readonly projectsService: ProjectService){}
 
+    // Глобальний пошук проєктів
+    @Get()
+    async findAllProjects(@Query('title') title: string) {
+        return this.projectsService.findAllProjects(title);
+    }
+
+    @UseGuards(AuthGuard)
     // Проєкти в яких є користувач
     @Get('my')
     async findAllMyProjects(@CurrentUser('sub') userId: string) {

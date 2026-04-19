@@ -30,6 +30,8 @@ model Project {
   id String @id @default(uuid())
   title String
   description String
+  isPublic Boolean @default(true)
+
   status ProjectStatus
   members Member[]
   sprints Sprint[]

@@ -5,21 +5,23 @@ import AppDrawer from './AppDrawer.vue';
 import { useModal } from '~/hooks/useModal';
 import TaskM from '~/modal/TaskM.vue';
 import CommitM from '~/modal/CommitM.vue';
+import ProfileDrawer from './ProfileDrawer.vue';
 
 const route = useRoute();
-const projectId = route.params.id;
+const projectId = route.params.id ?? '';
 const auth = useAuthStore();
 const profile = ref<any>(null);
 
 let pollingInterval: ReturnType<typeof setInterval> | null = null
 
 const isDrawerOpen = ref(false);
+const searchState = ref(false);
 const notificationState = ref(false);
-const notifications = ref<Notification | null>(null);
+const notifications = ref<Notification[]>([]);
 
-const openDrawer = ()=>{
-    isDrawerOpen.value = true
-}
+const search = reactive({
+    query: ''
+})
 
 async function reqProfile() {
     try{
@@ -127,7 +129,6 @@ async function removeTask(sprintId: string, taskId: string) {
     }
 }
 
-
 </script>
 
 <template>
@@ -150,7 +151,32 @@ async function removeTask(sprintId: string, taskId: string) {
             <li>
                 <div class="flex gap-2 bg-white border p-2 rounded-[15px]">
                     <p class="text-gray-400">Search:</p> 
-                    <input class="border-b-2 border-black focus:border-gray-400 transition focus:outline-none" type="text" name="" id="">
+                    <input 
+                        v-model="search.query"
+                        class="border-b-2 border-black focus:border-gray-400 transition focus:outline-none" 
+                        @input="searchState = true" 
+                        type="text"
+                    >
+
+                    <div 
+                        v-if="searchState"
+                        class="absolute flex flex-col mt-8"
+                    >
+                        <NuxtLink 
+                            class="w-[250px] m-auto p-3 border-2 bg-myWhite hover:bg-mySea hover:text-white transition"
+                            @click="searchState = false"
+                            :to="`/search?type=user&query=${search.query}`"
+                        >
+                            Search among users
+                        </NuxtLink>
+                        <NuxtLink 
+                            class="w-[250px] m-auto p-3 border-2 bg-myWhite hover:bg-mySea hover:text-white transition"
+                            @click="searchState = false"
+                            :to="`/search?type=project&query=${search.query}`"
+                        >
+                            Search among projects
+                        </NuxtLink>
+                    </div>
                 </div>
             </li>
             <li class="flex gap-3">
@@ -159,7 +185,7 @@ async function removeTask(sprintId: string, taskId: string) {
                 <nav v-else>
                     <div v-if="auth.user">
                         <div class="font-saira flex gap-3">
-                            <button @click="openDrawer()">Profile</button>
+                            <button @click="isDrawerOpen = true">Profile</button>
                             <button @click="notificationState = true" >Notification</button>
                             <button @click="auth.logout">Logout</button>
                         </div>
@@ -177,9 +203,9 @@ async function removeTask(sprintId: string, taskId: string) {
                             >
                                 ✕
                             </button>
-                            <div
+                            <!-- <div
                                 class="p-2" 
-                                :class="notification.isRead ? `bg-[#FFF8F8]` : `bg-[#E9DFC3]` "
+                                :class="notification.isRead ? `bg-myWhite` : `bg-myBeige` "
                             >
                                 <div
                                 >
@@ -202,7 +228,7 @@ async function removeTask(sprintId: string, taskId: string) {
                                         Видалити
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                     </div>
@@ -218,42 +244,10 @@ async function removeTask(sprintId: string, taskId: string) {
     </nav>
 
     <AppDrawer :isOpen="isDrawerOpen" @close="isDrawerOpen = false">
-        <p>ID: {{ profile.id }}</p>
-        <h1>{{ profile.name }}</h1>
-        <p>Email: {{ profile.email }}</p>
-        <p>Skills: {{ profile.skills }} year</p>
-        <h2>Tasks that you taked:</h2>
-        <div 
-            v-for="task in profile.tasks"
-            class="flex justify-between p-2 border"
-        >
-            <div>
-                <button class="text-blue-600" @click="openTask(task.id_project, task.id)">{{ task.title }}</button>
-                <p>Difficulty: {{ task.difficulty }}</p>
-                <p>Description: {{ task.description }}</p>
-            </div>
-            <div class="flex flex-col justify-center">
-                <button class="p-1 m-1 rounded-[5px] bg-gray-700 text-white" @click="removeTask(task.id_sprint, task.id)">
-                    Зняти задачу
-                </button>
-                <button class="p-1 m-1 rounded-[5px] bg-red-700 text-white">
-                    Перекинути задачу
-                </button>
-                <button class="p-1 m-1 rounded-[5px] bg-blue-600 text-white" @click="openCommitTask(task.id)">
-                    Закомітити задачу
-                </button>
-            </div>
-        </div>
-        <div class="flex p-2">
-            <p class="p-2">Something wrong? you can fix it:</p>
-            <NuxtLink 
-                class="p-2 bg-blue-600 text-white rounded-[5px]"
-                :to="`/profile/${auth.userId}`"
-                @click="isDrawerOpen = false"
-            >
-                Edit profile
-            </NuxtLink>
-        </div>
+        <ProfileDrawer 
+            :is-editable="true"
+            @close="isDrawerOpen = false"
+        />
     </AppDrawer>
 
 </template>

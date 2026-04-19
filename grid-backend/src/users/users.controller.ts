@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { AuthGuard } from "src/common/guards/auth.guards";
@@ -25,10 +25,9 @@ export class UsersController {
         return this.usersService.updatePassword(userId, dto);
     }
 
-    @UseGuards(AuthGuard)
     @Get()
-    findAll(){
-        return this.usersService.findAll();
+    findAll(@Query('name') name: string){
+        return this.usersService.findAll(name);
     }
 
     @UseGuards(AuthGuard)

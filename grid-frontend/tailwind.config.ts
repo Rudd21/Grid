@@ -13,7 +13,10 @@ export default <Partial<Config>>{
   theme: {
     extend: {
         colors: {
-            testColor: 'red'
+            myWhite: '#FFF8F8',
+            myBeige: '#E9DFC3',
+            mySea: '#1B56FD',
+            myBlue: '#0118D8'
         }
     },
     fontFamily:{

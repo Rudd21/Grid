@@ -6,32 +6,22 @@ const route = useRoute();
 
 const auth = useAuthStore();
 const userId = route.params.id;
-const data = ref<{user: User, crossProjects: CrossProject[] } | null>(null);
 
 const profileState = ref('');
 const passwordState = ref('');
 const toUpdatePassword = ref(false);
 
-async function reqProfile() {
-    try{
-        data.value = await $fetch(`http://localhost:8000/users/${userId}/profile`,{
-            method: 'GET',
-            credentials: 'include'
-        })
-
-        console.log(data.value)
-    }catch(error){
-        console.error('Виникла помилка при запиті профілю')
+const {data: profile, error} = await useFetch<{user: User, crossProjects: CrossProject[] } | null>(
+    ()=>`http://localhost:8000/users/${userId}/profile`,
+    {
+        method: 'GET',
+        credentials: 'include'
     }
-}
-
-onMounted(()=>{
-    reqProfile()
-})
+)
 
 const form = reactive({
-    name: data.value?.user.name ?? '',
-    skills:  data.value?.user.skills ?? 1,
+    name: profile.value?.user.name ?? '',
+    skills:  profile.value?.user.skills ?? 1,
 })
 
 const passwordForm = reactive({
@@ -39,7 +29,7 @@ const passwordForm = reactive({
     oldPassword: ''
 })
 
-watch(data, (newUser) => {
+watch(profile, (newUser) => {
     if(!newUser) return
     form.name = newUser.user.name ?? ''
     form.skills = newUser.user.skills ?? 1
@@ -72,8 +62,8 @@ async function updatePassword(){
 </script>
 
 <template>
-    <div class="bg-white flex flex-col justify-start border p-1 m-auto w-[60%] h-[80vh] rounded-[10px]">
-        <div v-if="data" class="grid grid-cols-2  gap-2 items-center">
+    <div class="bg-white flex flex-col justify-start border p-1 mt-10 m-auto shadow-regular w-[60%]">
+        <div v-if="profile" class="grid grid-cols-2  gap-2 items-center">
             <div class="flex flex-col items-center">
                 <img src="../public/default-user.png" alt="avatar">
                 <button v-if="auth.userId == userId">Завантажити нове фото</button>
@@ -97,7 +87,7 @@ async function updatePassword(){
                     </form>
                     <form v-else class="flex flex-col gap-2" action="submit" @submit.prevent="updateProfile">
                         <label class="flex gap-1">
-                            <p class="text-gray-400">ID:</p> {{ data.user.id }}
+                            <p class="text-gray-400">ID:</p> {{ profile.user.id }}
                         </label>
                         <label class="flex gap-1">
                             <p class="text-gray-400">Name:</p>
@@ -112,17 +102,17 @@ async function updatePassword(){
                 </div>
 
                 <div v-else class="flex flex-col gap-2">
-                    <p><span class="text-gray-400">ID:</span> {{ data.user.id }}</p>
-                    <p><span class="text-gray-400">Name:</span> {{ data.user.name }}</p>
-                    <p><span class="text-gray-400">Skills:</span> {{ data.user.skills }} years</p>
+                    <p><span class="text-gray-400">ID:</span> {{ profile.user.id }}</p>
+                    <p><span class="text-gray-400">Name:</span> {{ profile.user.name }}</p>
+                    <p><span class="text-gray-400">Skills:</span> {{ profile.user.skills }} years</p>
                 </div>
             </div>
         </div>
-        <div v-if="data && auth.userId == userId">
-           <div v-if="data.user.tasks?.length">
+        <div v-if="profile && auth.userId == userId">
+           <div v-if="profile.user.tasks?.length">
                 <h2 class="ml-5">Активні взятті завдання:</h2>
                 <div
-                    v-for="task in data?.user.tasks"
+                    v-for="task in profile?.user.tasks"
                     class="border p-2 m-3"    
                 >
                     <p>ID: {{ task.id }}</p>
@@ -137,10 +127,13 @@ async function updatePassword(){
                 </div>
             </div>
         </div>
-        <div v-if="auth.userId != userId && data?.crossProjects">
+        <div 
+            v-if="auth.userId != userId && profile?.crossProjects"
+            class="ml-10"
+        >
             <h3>Спільні проєкти:</h3>
-            <div v-for="project in data.crossProjects">
-                <p>{{ project.title }}</p>
+            <div v-for="project in profile.crossProjects">
+                <NuxtLink>{{ project.title }}</NuxtLink>
             </div>
         </div>
     </div>

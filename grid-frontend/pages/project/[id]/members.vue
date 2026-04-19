@@ -55,7 +55,7 @@ const openNotification = (userId: string) =>{
     <div class="p-2 w-[95%] m-auto">
         <h1>Учасники проєкту:</h1>
         <div class="flex p-2 m-auto mb-2 bg-gray-200 justify-around rounded-[5px]" v-for="member in members">
-            <h1>{{ member.user.name }}</h1>
+            <NuxtLink :to="`/profile/${member.user.id}`">{{ member.user.name }}</NuxtLink>
             <p
             :class="member.role == 'OWNER' ? 'text-red-500' : 'text-gray-500'"
             >{{ member.role }}</p>

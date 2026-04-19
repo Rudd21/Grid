@@ -218,10 +218,10 @@ const openCommitTask = (taskId: string) => {
                     class="m-2 p-1">
 
                     <div class="flex justify-between gap-3">
-                        <h1>Спринт: {{ sprint.title }}</h1>
+                        <h1>Sprint: {{ sprint.title }}</h1>
                         <div class="flex justify-start gap-3">
-                            <p>Початок: {{ formatDate(sprint.start_date) }}</p>
-                            <p>Кінець: {{ formatDate(sprint.end_date) }}</p>
+                            <p>Start: {{ formatDate(sprint.start_date) }}</p>
+                            <p>End: {{ formatDate(sprint.end_date) }}</p>
                         </div>
                     </div>
                     <div
@@ -259,7 +259,7 @@ const openCommitTask = (taskId: string) => {
                                     class="flex items-center p-2 mt-2 bg-green-400 text-white" 
                                     @click="openCreateTask(sprint.id)"
                                 >    
-                                    + Додати нову задачу
+                                    + Create task
                                 </button>
                             </div>
                         </div>

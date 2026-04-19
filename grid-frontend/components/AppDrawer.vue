@@ -7,7 +7,7 @@ defineEmits(['close'])
 
 <template>
     <Transition name="drawer">
-        <div v-if="isOpen" class="fixed top-0 right-0 h-full w-[450px] bg-white shadow-x1 z-50 p-4">
+        <div v-if="isOpen" class="fixed top-0 right-0 h-full w-[450px] bg-white shadow-xl z-50 p-4">
             <button @click="$emit('close')">✕</button>
             <slot />
         </div>
@@ -21,3 +21,19 @@ defineEmits(['close'])
         />
     </Transition>
 </template>
+
+<style>
+.drawer-enter-active, .drawer-leave-active {
+  transition: transform 0.3s ease;
+}
+.drawer-enter-from, .drawer-leave-to {
+  transform: translateX(100%);
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+</style>

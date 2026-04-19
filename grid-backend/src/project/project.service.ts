@@ -19,6 +19,14 @@ export class ProjectService {
     }    
 
     // Контролери
+    async findAllProjects(title: string) {
+        return this.prisma.project.findMany({
+            where:{
+                title
+            }
+        })
+    }
+
     async findAllMyProjects(userId: string) {
         const memberships = await this.prisma.member.findMany({
             where: {

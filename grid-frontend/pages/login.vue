@@ -43,7 +43,7 @@ async function SubmitForm(args: LoginForm){
 </script>
 
 <template>
-    <div class="m-auto bg-white border-2 border-[black] my-[10%] w-[30%] p-2">
+    <div class="font-saira shadow-regular m-auto bg-white border-2 border-[black] my-[10%] w-[30%] p-2">
         <h1 class="text-center font-bold text-[25px] text-blue-600">Login</h1>
         <form class="flex flex-col gap-5" @submit.prevent="SubmitForm(form)">
             <label class="flex flex-col m-auto">
