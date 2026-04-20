@@ -1,23 +1,32 @@
 <script setup lang="ts">
 import { useAuthStore } from '#imports';
-import { NotificationType } from '~/types/notification';
+import { NotificationType, type Notification } from '~/types/notification';
 import AppDrawer from './AppDrawer.vue';
 import { useModal } from '~/hooks/useModal';
 import TaskM from '~/modal/TaskM.vue';
 import CommitM from '~/modal/CommitM.vue';
 import ProfileDrawer from './ProfileDrawer.vue';
+import { useNotification } from '~/hooks/useNotification';
 
 const route = useRoute();
 const projectId = route.params.id ?? '';
 const auth = useAuthStore();
 const profile = ref<any>(null);
 
-let pollingInterval: ReturnType<typeof setInterval> | null = null
-
 const isDrawerOpen = ref(false);
 const searchState = ref(false);
-const notificationState = ref(false);
-const notifications = ref<Notification[]>([]);
+
+const {
+    notificationState,
+    notifications,
+    openNotification, 
+    closeNotification, 
+    reqNotification, 
+    makeAsRead, 
+    deleteNotification,
+    startPolling, 
+    stopPolling,} = useNotification()
+
 
 const search = reactive({
     query: ''
@@ -36,72 +45,27 @@ async function reqProfile() {
     }
 }
 
-async function reqNotification() {
-    try{
-        notifications.value = await $fetch(`http://localhost:8000/notification/${auth.userId}`,{
-            method: 'GET',
-            credentials: 'include'
-        })
-    }catch(error){
-        console.error("Виникла помилка запиту сповіщень: ", error)
-    }
-}
-
-async function makeAsRead(notifId: string) {
-    try{
-        await $fetch(`http://localhost:8000/notification/${notifId}`,{
-            method: 'PATCH',
-            credentials: 'include'
-        })
-    }catch(error){
-        console.error("Виникла помилка при позначенні повідомлення як прочитаного: ", error)
-    }
-}
-
-async function deleteNotification(notifId: string) {
-    try{
-        await $fetch(`http://localhost:8000/notification/${notifId}`,{
-            method: 'DELETE',
-            credentials: 'include'
-        })
-        reqNotification()
-    }catch(error){
-        console.error('Виникла помилка при видалені сповіщення: ', error)
-    }
-}
+onMounted(()=>{
+    reqProfile()
+})
 
 onMounted(()=>{
-    if(auth.isInitialized && auth.userId){
-        reqProfile();
-        reqNotification()
-        pollingInterval = setInterval(reqNotification, 1000 * 30);
-    }
-
-    watch(() => auth.isInitialized, (initialized)=>{
-        if(initialized && auth.userId){
-            reqProfile();
-            reqNotification()
-            pollingInterval = setInterval(reqNotification, 1000 * 30);
-        }
-    })
+    startPolling()
 })
 
 onUnmounted(()=>{
-    if(pollingInterval){
-        clearInterval(pollingInterval)
-    }
+    stopPolling()
 })
 
 const modal = useModal();
 
-const openTask = (projectId: string, taskId: string) =>{
+const openTask = (taskId: string) =>{
     isDrawerOpen.value = false;
-    notificationState.value = false;
+    closeNotification()
     
     modal.open({
         component: TaskM,
         props:{
-            projectId,
             taskId
         }
     })
@@ -186,49 +150,59 @@ async function removeTask(sprintId: string, taskId: string) {
                     <div v-if="auth.user">
                         <div class="font-saira flex gap-3">
                             <button @click="isDrawerOpen = true">Profile</button>
-                            <button @click="notificationState = true" >Notification</button>
+                            <button @click="openNotification" >Notification</button>
                             <button @click="auth.logout">Logout</button>
                         </div>
 
                         <!-- Notification bar -->
-                        <div 
+                        <div
                             v-if="notificationState"
-                            v-for="notification in notifications"
                             class="absolute z-20 flex w-50 right-20 flex-col border bg-white p-5 rounded-[5px]"
-                            :class="notifications"
                         >
                             <button 
-                                @click="notificationState = false"
+                                @click="closeNotification()"
                                 class="text-red-600"
                             >
                                 ✕
                             </button>
-                            <!-- <div
-                                class="p-2" 
-                                :class="notification.isRead ? `bg-myWhite` : `bg-myBeige` "
+                            <div
+                                v-if="notifications && notifications.length > 0"
                             >
-                                <div
-                                >
-                                    <p>{{ notification.type == NotificationType.TASK_RECOMMEND ? "Рекомендація задачі " : "Передача задачі " }}</p>
-                                    <p>від: {{ notification.id_sender }}</p>
-                                </div>
-                                <p>{{ notification.message }}</p>
-                                <div class="flex justify-between">
-                                    <button 
-                                        class="text-blue-600" 
-                                        @click="
-                                            makeAsRead(notification.id);
-                                            openTask(notification.id_project, notification.id_task)
-                                        "
-                                        >Завдання</button>
-                                    <button 
-                                        class="p-1 bg-red-500 text-white"
-                                        @click="deleteNotification(notification.id)"    
+                                <div v-for="notification in notifications">
+                                    <div
+                                        class="p-2" 
+                                        :class="notification.isRead ? `bg-myWhite` : `bg-myBeige` "
                                     >
-                                        Видалити
-                                    </button>
+                                        <div
+                                        >
+                                            <p>{{ notification.type == NotificationType.TASK_RECOMMEND ? "Рекомендація задачі " : "Передача задачі " }}</p>
+                                            <p>від: {{ notification.id_sender }}</p>
+                                        </div>
+                                        <p>{{ notification.message }}</p>
+                                        <div 
+                                            v-if="notification.id_task"
+                                            class="flex justify-between"
+                                        >
+                                            <button 
+                                                class="text-blue-600" 
+                                                @click="
+                                                    makeAsRead(notification.id);
+                                                    openTask(notification.id_task)
+                                                "
+                                                >Завдання</button>
+                                            <button 
+                                                class="p-1 bg-red-500 text-white"
+                                                @click="deleteNotification(notification.id)"    
+                                            >
+                                                Видалити
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div> -->
+                            </div>
+                            <div v-else>
+                                <h1>Сповіщень немає</h1>
+                            </div>
                         </div>
 
                     </div>

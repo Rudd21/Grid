@@ -19,7 +19,7 @@ export class TaskController {
         private readonly commentService: CommentService
     ){}
 
-    @Get(':taskId')
+    @Get(':taskId/full')
     async requestFullTask(@Param('taskId') taskId: string, @Query('projectId') projectId: string){
         const [task, sprints, comment] = await Promise.all([
             this.taskService.pickTask(taskId),
@@ -28,6 +28,11 @@ export class TaskController {
         ])
 
         return {task, sprints, comment}
+    }
+
+    @Get(':taskId/only')
+    async requestTask(@Param('taskId') taskId: string){
+        return this.taskService.pickTask(taskId);
     }
 
     @Patch(':taskId')

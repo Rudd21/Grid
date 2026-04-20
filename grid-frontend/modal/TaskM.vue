@@ -8,12 +8,9 @@ import CommitM from './CommitM.vue';
 import type { Comment } from '~/types/comment';
 
 const props = defineProps<{
-    projectId: string,
     sprintId: string,
     taskId: string,
 }>();
-
-const projectId = props.projectId;
 
 const data = ref<{task: Task, sprints: Sprint[], comment: Comment[]} | null>(null);
 const emit = defineEmits(['updated'])
@@ -37,7 +34,7 @@ const comment = reactive<CommentPayload>({
 
 async function reqTask() {
     try{
-        data.value = await $fetch(`http://localhost:8000/task/${props.taskId}?projectId=${props.projectId}`,{
+        data.value = await $fetch(`http://localhost:8000/task/${props.taskId}`,{
             method: 'GET',
             credentials: 'include'
         })
@@ -62,7 +59,7 @@ async function updateTask(params: UpdateTaskDto) {
     try{
         formState.value = "Оновлення..."
 
-        await $fetch(`http://localhost:8000/task/${data.value?.task.id}`,{
+        await $fetch(`http://localhost:8000/task/${data.value?.task.id}/only`,{
             method: 'PATCH',
             body: form,
             credentials: 'include'
@@ -94,15 +91,15 @@ async function sentComment() {
     }
 }
 
-const openNotification = (taskId: string) =>{
-    modal.open({
-        component: CreateNotification,
-        props:{
-            projectId,
-            taskId
-        }
-    })
-}
+// const openNotification = (taskId: string) =>{
+//     modal.open({
+//         component: CreateNotification,
+//         props:{
+//             projectId,
+//             taskId
+//         }
+//     })
+// }
 
 </script>
 
@@ -157,7 +154,6 @@ const openNotification = (taskId: string) =>{
                 <button
                     v-else 
                     class="bg-blue-600 rounded-[5px] text-white m-2 p-2"
-                    @click="openNotification(data!.task.id)"
                 >    
                     Назначити користувача</button>
                 <div class="border-2 p-2">

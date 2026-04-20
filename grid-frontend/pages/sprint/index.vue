@@ -1,3 +1,0 @@
-<template>
-    привіт софійко
-</template>
