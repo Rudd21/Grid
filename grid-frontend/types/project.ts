@@ -13,6 +13,7 @@ export interface Project{
     title: string;
     description: string;
     status: ProjectStatus;
+    isPublic: Boolean;
 
     members?: Member[]
     sprints?: Sprint[]

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
 const route = useRoute();
-const projectId = route.params.id;
+const projectId = route.params.id?.toString() ?? '';
+
 
 // Request projects
 const projectList = ref();
@@ -9,38 +10,7 @@ const currentProject = ref();
 
 
 // Bookmark requests
-interface Bookmark{
-    title: string;
-    to: string;
-    reqTo: string;
-}
 
-const bookmarkList: Record<string, Bookmark> = {
-    sprint:{
-        title: 'Sprint',
-        to: '/sprint',
-        reqTo: '/reqSprints'
-    }, task:{
-        title: 'Task',
-        to: '/task',
-        reqTo: '/reqTasks'
-    }, statistic:{
-        title: 'Statistic',
-        to: '/statistic',
-        reqTo: '/reqStatistic'
-    }, members:{
-        title: 'Members',
-        to: '/members',
-        reqTo: '/reqMembers'
-    }, settings:{
-        title: 'Settings',
-        to: '/settings',
-        reqTo: '/settings'
-    }
-}
-
-const currentData = ref()
-const isLoading = ref(false);
 
 // async function bookmarkRequest(endPoint: string) {
 //     isLoading.value = true
@@ -71,6 +41,18 @@ const isLoading = ref(false);
 //     }
 // }
 
+type WorkplaceTab = 'task' | 'sprint' | 'members' | 'settings' | 'statistic';
+
+const WORKPLACE_TABS: WorkplaceTab[] = ['task', 'sprint', 'members', 'settings', 'statistic'];
+
+const isWorkplace = computed(()=>{
+    const pathSegment = route.path.split('/')
+
+    const currentTab = pathSegment[pathSegment.length - 1] as WorkplaceTab
+
+    return WORKPLACE_TABS.includes(currentTab);
+})
+
 
 </script>
 
@@ -89,25 +71,15 @@ const isLoading = ref(false);
         </div>
 
         <!-- Bookmarks -->
-        <div class="flex flex-grow">
+        <div>
 
             <!-- Project bar -->
-            <div class="min-w-[20%] bg-blue-600/60">
-                <div class="flex flex-col mt-5">
-                    <NuxtLink
-                        v-for="(item, key) in bookmarkList"    
-                        :key="key"
-                        :to="`/project/${projectId}${item.to}`"
-                        :disabled="!currentProject"
-                        class=" flex items-center cursor-pointer text-left text-[20px] min-h-[50px] transition-color disabled:text-gray-400 disabled:bg-gray-200 hover:bg-blue-600 transition"
-                    >
-                        <p class="font-boldonse ml-2 text-white">{{ item.title }}</p>
-                    </NuxtLink>
-                </div>
-            </div>
+            <ProjectWorkplace v-if="isWorkplace" :projectId="projectId">
+                <NuxtPage />
+            </ProjectWorkplace>
 
             <!-- Work place -->
-            <div class="flex-grow border-t-2 border-blue-600/60 bg-white">
+            <div v-else class="flex-grow h-screen border-t-2 border-blue-600/60 bg-white">
                 <NuxtPage />
             </div>
         </div>

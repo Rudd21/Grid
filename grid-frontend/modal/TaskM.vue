@@ -34,7 +34,7 @@ const comment = reactive<CommentPayload>({
 
 async function reqTask() {
     try{
-        data.value = await $fetch(`http://localhost:8000/task/${props.taskId}`,{
+        data.value = await $fetch(`http://localhost:8000/task/${props.taskId}/full`,{
             method: 'GET',
             credentials: 'include'
         })

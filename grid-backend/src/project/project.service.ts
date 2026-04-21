@@ -51,7 +51,10 @@ export class ProjectService {
 
     async pickProject(projectId: string){
         return this.prisma.project.findUnique({
-            where: { id:projectId }
+            where: { id:projectId },
+            include: { 
+                members: true
+            }
         })
     }
 
