@@ -24,6 +24,7 @@ export interface Task {
 
     comment: Comment[]
 
+    tags: string[]
     commit: string;
     commit_description: string;
     done_at: string;

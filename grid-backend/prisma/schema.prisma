@@ -17,13 +17,21 @@ model User {
   name String
   password String
 
-  skills Int @default(1)
+  skills String[]
+  experienceLevel ExperienceLevel @default(JUNIOR)
+
   membership Member[]
   tasks Task[]
   comment Comment[]
 
   receivedNotifications Notification[] @relation("received")
   sentNotifications Notification[] @relation("sent")
+}
+
+enum ExperienceLevel {
+  JUNIOR
+  MIDDLE
+  SENIOR
 }
 
 model Project {
@@ -82,6 +90,7 @@ model Task {
   difficulty TaskDifficulty @default(MEDIUM)
   taken_at DateTime?
   
+  tags String[]
   commit String?
   commit_description String?
   done_at DateTime?

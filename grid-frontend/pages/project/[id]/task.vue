@@ -2,7 +2,7 @@
 import { io } from 'socket.io-client';
 import { useModal } from '~/hooks/useModal';
 import CommitM from '~/modal/CommitM.vue';
-import CreateNotification from '~/modal/CreateNotification.vue';
+// import CreateNotification from '~/modal/CreateNotification.vue';
 import CreateSprint from '~/modal/CreateSprint.vue';
 import CreateTask from '~/modal/CreateTask.vue';
 import TaskM from '~/modal/TaskM.vue';
@@ -175,15 +175,15 @@ const openCreateTask = (sprintId: string) => {
     })
 }
 
-const openNotification = (taskId: string) =>{
-    modal.open({
-        component: CreateNotification,
-        props: {
-            projectId,
-            taskId
-        }
-    })
-}
+// const openNotification = (taskId: string) =>{
+//     modal.open({
+//         component: CreateNotification,
+//         props: {
+//             projectId,
+//             taskId
+//         }
+//     })
+// }
 
 const openTask = (task: Task) =>{
     modal.open({

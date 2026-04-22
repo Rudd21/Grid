@@ -114,7 +114,9 @@ export class ProjectService {
                     select:{
                         id: true,
                         name: true,
-                        email: true
+                        email: true,
+                        skills: true,
+                        experienceLevel: true
                     }
                 }
             }

@@ -2,10 +2,8 @@
 import { useModal } from '~/hooks/useModal';
 import type { Sprint } from '~/types/sprint';
 import { TaskDifficulty, type CreateTaskDto, type Task, type UpdateTaskDto } from '~/types/task';
-import type { User } from '~/types/user';
-import CreateNotification from './CreateNotification.vue';
-import CommitM from './CommitM.vue';
 import type { Comment } from '~/types/comment';
+import NotifyUser from './NotifyUser.vue';
 
 const props = defineProps<{
     sprintId: string,
@@ -15,6 +13,7 @@ const props = defineProps<{
 const data = ref<{task: Task, sprints: Sprint[], comment: Comment[]} | null>(null);
 const emit = defineEmits(['updated'])
 const formState = ref();
+const notifyUserState = ref(false)
 const modal = useModal()
 
 const form = reactive<UpdateTaskDto>({
@@ -154,8 +153,17 @@ async function sentComment() {
                 <button
                     v-else 
                     class="bg-blue-600 rounded-[5px] text-white m-2 p-2"
+                    @click="notifyUserState = !notifyUserState"
                 >    
-                    Назначити користувача</button>
+                    Назначити користувача
+                </button>
+                <NotifyUser 
+                    v-if="data?.task && notifyUserState" 
+                    class="border-2 p-2"
+                    :project-id="data?.task.id_project" 
+                    :task="data?.task"
+                    :task-difficulty="data?.task.difficulty"
+                />
                 <div class="border-2 p-2">
                     <form class="flex items-center gap-2" action="submit" @submit.prevent="sentComment">
                         <label>

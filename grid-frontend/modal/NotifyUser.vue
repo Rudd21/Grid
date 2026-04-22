@@ -2,50 +2,45 @@
 import type { Member } from '~/types/member';
 import { NotificationType, type CreateNotificationDto } from '~/types/notification';
 import type { Sprint } from '~/types/sprint';
-import type { Task } from '~/types/task';
-
+import type { Task, TaskDifficulty } from '~/types/task';
+import { getRecommendedDevelopers } from '~/types/user';
 
 const props = defineProps<{
     projectId: string,
+    
+    receiverSkill?: number,
     receiverId?: string, 
-    taskId?: string,
+
+    task?: Task,
+    taskDifficulty?: TaskDifficulty
 }>();
 
-const members = ref<Member[] | null>(null);
-const sprint = ref<Sprint | null>(null);
-
-async function reqMembers() {
-    try{
-        members.value = await $fetch(`http://localhost:8000/project/${props.projectId}/members`,{
-            method: 'GET',
-            credentials: 'include'
-        })
-    }catch(error){
-        console.error("Невдалося зібрати учасників: ", error)
+const {data: options, error} = useFetch<Member[] | Sprint>(
+    () => {
+        return props.task ? `http://localhost:8000/project/${props.projectId}/members` : `http://localhost:8000/project/${props.projectId}/activeTask`
+    },{
+        credentials: 'include'
     }
-}
+)
 
-async function reqSprint() {
-    try{
-        sprint.value = await $fetch(`http://localhost:8000/project/${props.projectId}/activeTask`,{
-            method: 'GET',
-            credentials: 'include'
-        })
-    }catch(error){
-        console.error("Невдалося зібрати задачі: ", error)
-    }
-}
+const processedMembers = computed(()=>{
+    if(!props.task || !props.taskDifficulty) return;
 
-onMounted(()=>{
-    reqMembers()
-    reqSprint()
+    const members = Array.isArray(options.value) ? (options.value as Member[]) : [];
+
+    return getRecommendedDevelopers(members, props.task);
 })
+
+const sprint = computed(()=>{
+    return (options.value && !Array.isArray(options.value)) ? (options.value as Sprint) : null
+})
+
 
 const form = reactive<CreateNotificationDto>({
     type: NotificationType.TASK_RECOMMEND,
     message: '',
     id_receiver: props.receiverId ?? '',
-    id_task: props.taskId ?? '',
+    id_task: '',
     id_project: props.projectId
 })
 
@@ -66,35 +61,29 @@ async function submitForm() {
 <template>
     <div>
         <h1>Назначити задачу</h1>
-        <form class="flex flex-col p-3" v-if="sprint && members" action="submit" @submit.prevent="submitForm">
+        <form class="flex flex-col p-3" action="submit" @submit.prevent="submitForm">
             
             <label class="p-1">
                 Тип назначення:
                 <select v-model="form.type">
                     <option value="TASK_RECOMMEND">Рекомендувати</option>
-                    <option value="TASK_TRANSFER">Перекинути</option>
                 </select>
             </label>
 
-            <label class="p-1">
-                Повідомлення:
-                <input type="text" v-model="form.message">
-            </label>
-
-            <label id="id_user" name="id_user" class="p-1" v-if="!props.receiverId">
+            <label v-if="processedMembers" id="id_user" name="id_user" class="p-1">
                 Користувач:
                 <select v-model="form.id_receiver">
                     <option
-                        v-for="member in members"
+                        v-for="member in processedMembers"
                         :key="member.user.id"
                         :value="member.user.id"
                     >
-                        {{ member.user.name }}
+                        {{ member.user.name }} {{ member.isRecommended ? '(Реконмендує)' : '' }}
                     </option>
                 </select>
             </label>
 
-            <label class="p-1" v-if="!props.taskId">
+            <label v-if="sprint" class="p-1">
                 Задача:
                 <select id="id_task" name="id_task" v-model="form.id_task">
                     <option
@@ -105,6 +94,11 @@ async function submitForm() {
                         {{ task.title }}
                     </option>
                 </select>
+            </label>
+
+            <label class="p-1">
+                Повідомлення:
+                <input type="text" v-model="form.message">
             </label>
 
             <button type="submit">Запропонувати</button>
