@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useModal } from '~/hooks/useModal';
 import type { Sprint } from '~/types/sprint';
-import { TaskDifficulty, type CreateTaskDto, type Task, type UpdateTaskDto } from '~/types/task';
+import { TaskDifficulty, type Task, type UpdateTaskDto } from '~/types/task';
 import type { Comment } from '~/types/comment';
 import NotifyUser from './NotifyUser.vue';
 
@@ -19,9 +19,24 @@ const modal = useModal()
 const form = reactive<UpdateTaskDto>({
     title: data.value?.task.title ?? '',
     description: data.value?.task.description ?? '',
+    tags: data.value?.task.tags ?? [],
     difficulty: data.value?.task.difficulty ?? TaskDifficulty.EASY,
     id_sprint: data.value?.task.id_sprint ?? ''
 })
+
+const newTag = ref('')
+
+function addTag(){
+    const val = newTag.value.trim();
+    if(val && !form.tags.includes(val)){
+        form.tags.push(val)
+        newTag.value = '';
+    }
+}
+
+function removeTag(index: number){
+    form.tags.splice(index, 1)
+}
 
 type CommentPayload = {
     text: string
@@ -46,6 +61,7 @@ watch(data, (newData) => {
     if(!newData) return
     form.title = newData.task.title ?? ''
     form.description = newData.task.description ?? ''
+    form.tags = newData.task.tags ?? []
     form.difficulty = newData.task.difficulty ?? ''
     form.id_sprint = newData.task.id_sprint ?? ''
 })
@@ -58,7 +74,7 @@ async function updateTask(params: UpdateTaskDto) {
     try{
         formState.value = "Оновлення..."
 
-        await $fetch(`http://localhost:8000/task/${data.value?.task.id}/only`,{
+        await $fetch(`http://localhost:8000/task/${data.value?.task.id}`,{
             method: 'PATCH',
             body: form,
             credentials: 'include'
@@ -120,6 +136,21 @@ async function sentComment() {
                         <label class="flex flex-col gap-1 p-1">
                             <p class="text-gray-400">Description:</p>
                             <textarea v-model="form.description" class="border p-1 rounded-[5px]" type="text" required></textarea>
+                        </label>
+                        <label class="flex flex-col p-1">
+                            <p>Tags:</p>
+                            <div class="flex w-[300px]">
+                                <span 
+                                    v-for="(tag, index) in form.tags"
+                                    :key="index"
+                                    @click="removeTag(index)"
+                                    class="p-1 bg-myBeige w-min rounded-[5px]"
+                                >
+                                    #{{ tag }}
+                                </span>
+                            </div>
+                            <input v-model="newTag" type="text" placeholder="Add a tag...">
+                            <button @click="addTag">Add tag</button>
                         </label>
                         <label class="flex gap-1 items-center p-1">
                             <p class="text-gray-400">Difficulty:</p>

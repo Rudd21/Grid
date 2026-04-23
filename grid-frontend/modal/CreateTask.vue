@@ -10,8 +10,23 @@ const isSuccess = ref(false);
 const form = reactive<CreateTaskDto>({
     title: '',
     description: '',
+    tags: [],
     difficulty: TaskDifficulty.MEDIUM
 })
+
+const newTag = ref('')
+
+function addTag(){
+    const val = newTag.value.trim();
+    if(val && !form.tags.includes(val)){
+        form.tags.push(val)
+        newTag.value = '';
+    }
+}
+
+function removeTag(index: number){
+    form.tags.splice(index, 1)
+}
 
 async function createTask(args: CreateTaskDto) {
     try{
@@ -27,9 +42,7 @@ async function createTask(args: CreateTaskDto) {
     }catch (error: any) {
         const backendError = error.response?._data;
         console.error("Деталі помилки з бекенду:", backendError);
-    }finally{
-
-        }
+    }
 }
 
 </script>
@@ -46,6 +59,21 @@ async function createTask(args: CreateTaskDto) {
                 <label class="p-1">
                     Input description:
                     <input v-model="form.description" class="border p-1" type="text" required>
+                </label>
+                <label class="flex flex-col p-1">
+                    <p>Tags</p>
+                    <div class="flex w-[300px]">
+                        <span 
+                            v-for="(tag, index) in form.tags"
+                            :key="index"
+                            @click="removeTag(index)"
+                            class="p-1 bg-myBeige w-min rounded-[5px]"
+                        >
+                            #{{ tag }}
+                        </span>
+                    </div>
+                    <input v-model="newTag" type="text" placeholder="Add a tag...">
+                    <button @click="addTag">Add tag</button>
                 </label>
                 <label class="p-1">
                     Difficulty:

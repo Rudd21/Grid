@@ -78,7 +78,7 @@ async function submitForm() {
                         :key="member.user.id"
                         :value="member.user.id"
                     >
-                        {{ member.user.name }} {{ member.isRecommended ? '(Реконмендує)' : '' }}
+                        {{ member.user.name }} {{ member.isRecommended ? '(Реконмендовано)' : '' }}
                     </option>
                 </select>
             </label>

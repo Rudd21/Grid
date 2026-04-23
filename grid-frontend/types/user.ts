@@ -1,7 +1,7 @@
 import type { Member } from "./member"
 import type { Task } from "./task"
 
-enum ExperienceLevel {
+export enum ExperienceLevel {
     JUNIOR = "JUNIOR",
     MIDDLE = "MIDDLE",
     SENIOR = "SENIOR"

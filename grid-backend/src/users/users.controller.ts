@@ -6,6 +6,7 @@ import { CurrentUser } from "src/common/decorators/user.decorator";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService){}

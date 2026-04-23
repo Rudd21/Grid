@@ -37,12 +37,14 @@ export interface Task {
 export interface CreateTaskDto {
     title: string;
     description: string;
+    tags: string[];
     difficulty: TaskDifficulty;
 }
 
 export interface UpdateTaskDto{
     title: string;
     description: string;
+    tags: string[];
     difficulty: TaskDifficulty;
     id_sprint: string;
 }

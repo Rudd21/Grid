@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsDateString, IsEnum, IsString, IsUUID, MinLength } from 'class-validator';
+import { IsArray, IsDateString, IsEnum, IsString, IsUUID, MinLength } from 'class-validator';
 import { CreateTaskDto } from './create-task.dto';
 import { TaskDifficulty } from '@prisma/client';
 
@@ -10,6 +10,9 @@ export class UpdateTaskDto extends PartialType(CreateTaskDto) {
 
     @IsString()
     description!: string;
+
+    @IsArray({message: "Теги до завдань мають бути масивом"})
+    tags!: []
 
     @IsEnum(TaskDifficulty, {message: "Вказано варіант якого не існує"})
     difficulty!: TaskDifficulty

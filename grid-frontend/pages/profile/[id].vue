@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CrossProject } from '~/types/project';
-import type { User } from '~/types/user';
+import { ExperienceLevel, type User } from '~/types/user';
 
 const route = useRoute();
 
@@ -21,19 +21,29 @@ const {data: profile, error} = await useFetch<{user: User, crossProjects: CrossP
 
 const form = reactive({
     name: profile.value?.user.name ?? '',
-    skills:  profile.value?.user.skills ?? 1,
+    experienceLevel: profile.value?.user.experienceLevel ?? ExperienceLevel.JUNIOR,
+    skills:  profile.value?.user.skills ?? [],
 })
+
+const newSkill = ref('')
+
+function addSkill(){
+    const val = newSkill.value.trim();
+    if(val && !form.skills.includes(val)){
+        form.skills.push(val)
+        newSkill.value = '';
+    }
+}
+
+function removeSkill(index: number){
+    form.skills.splice(index, 1)
+}
 
 const passwordForm = reactive({
     newPassword: '',
     oldPassword: ''
 })
 
-watch(profile, (newUser) => {
-    if(!newUser) return
-    form.name = newUser.user.name ?? ''
-    form.skills = newUser.user.skills ?? 1
-})
 
 async function updateProfile(){
     try{
@@ -62,6 +72,7 @@ async function updatePassword(){
 </script>
 
 <template>
+    {{ profile }}
     <div class="bg-white flex flex-col justify-start border p-1 mt-10 m-auto shadow-regular w-[60%]">
         <div v-if="profile" class="grid grid-cols-2  gap-2 items-center">
             <div class="flex flex-col items-center">
@@ -70,6 +81,7 @@ async function updatePassword(){
             </div>
             <div>
                 <div v-if="auth.userId == userId" class="h-15">
+
                     <label>
                         Оновити пароль:
                         <input @click="toUpdatePassword = !toUpdatePassword" type="checkbox">
@@ -85,6 +97,7 @@ async function updatePassword(){
                         </label>
                         <button class="p-2 bg-blue-600 text-white">Оновити пароль</button>
                     </form>
+
                     <form v-else class="flex flex-col gap-2" action="submit" @submit.prevent="updateProfile">
                         <label class="flex gap-1">
                             <p class="text-gray-400">ID:</p> {{ profile.user.id }}
@@ -94,8 +107,28 @@ async function updatePassword(){
                             <input v-model="form.name" type="text">
                         </label>
                         <label class="flex gap-1">
-                            <p class="text-gray-400">Skills:</p>
-                            <input v-model="form.skills" type="number" width="min">
+                            Experience level:
+                            <select v-model="form.experienceLevel" class="p-1" required>
+                                <option disabled value="">Оберіть рівень</option>
+                                <option value="JUNIOR">JUNIOR</option>
+                                <option value="MIDDLE">MIDDLE</option>
+                                <option value="SENIOR">SENIOR</option>
+                            </select>
+                        </label>
+                        <label class="flex flex-col p-1">
+                            <p>Tags:</p>
+                            <div class="flex w-[300px]">
+                                <span 
+                                    v-for="(skill, index) in form.skills"
+                                    :key="index"
+                                    @click="removeSkill(index)"
+                                    class="p-1 bg-myBeige w-min rounded-[5px]"
+                                >
+                                    #{{ skill }}
+                                </span>
+                            </div>
+                            <input v-model="newSkill" type="text" placeholder="Add skill...">
+                            <button @click="addSkill">Add skill</button>
                         </label>
                         <button class="p-2 bg-green-400 text-white">Оновити</button>
                     </form>

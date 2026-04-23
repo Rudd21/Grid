@@ -88,7 +88,7 @@ export class UsersService{
             // Профіль користувача
             this.prisma.user.findUnique({
                 where: {id: targetUserId},
-                select: {id: true, name: true, skills: true}
+                select: {id: true, name: true, experienceLevel: true, skills: true}
             }),
 
             this.prisma.project.findMany({

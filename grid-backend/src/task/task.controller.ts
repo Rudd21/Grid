@@ -56,6 +56,12 @@ export class TaskController {
     }
 
     @UseGuards(ProjectAccessGuard)
+    @Post()
+    async createTask(@Query('projectId') projectId: string, @Query('sprintId') sprintId: string, @Body() dto: UpdateTaskDto){
+        return this.taskService.createTask(projectId, sprintId, dto)
+    }
+
+    @UseGuards(ProjectAccessGuard)
     @Delete(':taskId')
     async deleteTask(@Param('taskId') taskId: string){
         return this.taskService.deleteTask(taskId)
